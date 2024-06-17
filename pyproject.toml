@@ -1,0 +1,27 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=64.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["light_embed*"] # <-- this changed
+
+[tool.setuptools.package-data]
+"light_embed" = ["**/*.json"]
+
+[project]
+name = "light-embed"
+version = "0.1.0"
+description = "Fast and Lightweight Text Embedding"
+readme = "README.md"
+authors = [{ name = "Binh Nguyen" }]
+requires-python = ">=3.9,<=3.12.3"
+dependencies = [
+    "python-dotenv", "numpy", "onnxruntime", "psutil", "tokenizers"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest", "pytest-cov", "tox", "black", "pip-tools", "flake8"
+]

@@ -1,0 +1,5 @@
+python-dotenv~=1.0.1
+numpy~=1.26.4
+onnxruntime~=1.17.3
+psutil~=5.9.8
+tokenizers~=0.15.2
