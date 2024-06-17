@@ -1,6 +1,6 @@
 # LightEmbed
 
-LightEmbed is a light-weight, fast, and efficient tool for generating sentence embeddings. Unlike other solutions, it does not rely on heavy dependencies like PyTorch and Transformers, making it suitable for environments with limited resources.
+LightEmbed is a light-weight, fast, and efficient tool for generating sentence embeddings. It does not rely on heavy dependencies like PyTorch and Transformers, making it suitable for environments with limited resources.
 
 ## Benefits
 
