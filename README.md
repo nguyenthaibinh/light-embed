@@ -4,14 +4,14 @@ LightEmbed is a light-weight, fast, and efficient tool for generating sentence e
 
 ## Benefits
 
-### 1. Light-weight
+#### 1. Light-weight
 - **Minimal Dependencies**: LightEmbed does not depend on PyTorch and Transformers.
 - **Low Resource Requirements**: Operates smoothly with minimal specs: 1GB RAM, 1 CPU, and no GPU required.
 
-### 2. Fast (as light)
+#### 2. Fast (as light)
 - **ONNX Runtime**: Utilizes the ONNX runtime, which is significantly faster compared to Sentence Transformers that use PyTorch.
 
-### 3. Same as Original Sentence Transformers' Outputs
+#### 3. Same as Original Sentence Transformers' Outputs
 - **Consistency**: Incorporates all modules from a Sentence Transformer model, including normalization and pooling.
 - **Accuracy**: Produces embedding vectors identical to those from Sentence Transformers.
 
