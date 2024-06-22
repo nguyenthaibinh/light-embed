@@ -1,7 +1,45 @@
 from typing import Optional, Dict, Any
 from pathlib import Path
-import json
 from huggingface_hub import snapshot_download
+
+LIGHT_EMBED_ORG_NAME = "LightEmbed"
+
+org_name_map = {
+	"sentence-transformers": "sbert",
+	"BAAI": "baai",
+	"Snowflake": ""
+}
+
+def get_onnx_model_info(
+	base_model_name: str,
+	quantize: bool
+):
+	org_name, model_suffix = base_model_name.split("/")
+	org_short_name = org_name_map.get(org_name, "")
+	
+	if org_short_name == LIGHT_EMBED_ORG_NAME:
+		onnx_model_name = base_model_name
+	else:
+		if org_short_name != "":
+			if quantize:
+				onnx_model_suffix = f"{org_short_name}-{model_suffix}-onnx-quantized"
+			else:
+				onnx_model_suffix = f"{org_short_name}-{model_suffix}-onnx"
+		else:
+			if quantize:
+				onnx_model_suffix = f"{model_suffix}-onnx-quantized"
+			else:
+				onnx_model_suffix = f"{model_suffix}-onnx"
+
+		onnx_model_name = f"{LIGHT_EMBED_ORG_NAME}/{onnx_model_suffix}"
+		
+	model_info = {
+		"model_name": onnx_model_name,
+		"base_model": base_model_name,
+		"quantize": str(quantize),
+		"model_file": "model.onnx"
+	}
+	return model_info
 
 def download_model_from_huggingface(
 	model_name: str,
@@ -37,23 +75,3 @@ def download_onnx_model(
 		cache_dir=cache_dir
 	)
 	return model_dir
-
-def get_onnx_model_info(
-	model_name: str,
-	quantize: bool
-) -> Dict[str, str]:
-	current_dir = Path(__file__).parent
-	# Load the modules of sentence transformer
-	supported_models_json_path = Path(current_dir, "supported_models.json")
-	with open(supported_models_json_path) as fIn:
-		supported_models = json.load(fIn)
-		
-	quantize_str = "true" if quantize else "false"
-	
-	for model_info in supported_models:
-		if model_name in (model_info["model_name"], model_info["base_model"]):
-			if quantize_str == model_info.get("quantized"):
-				return model_info
-			else:
-				break
-	return None

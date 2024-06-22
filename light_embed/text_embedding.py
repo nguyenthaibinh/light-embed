@@ -1,6 +1,7 @@
 from typing import Optional, Union, List, Dict, Any, Literal
 from pathlib import Path
 import numpy as np
+from huggingface_hub.utils._errors import RepositoryNotFoundError
 from light_embed.utils.model import download_onnx_model, get_onnx_model_info
 from light_embed.utils.functions import normalize, quantize_embeddings
 from light_embed.modules import OnnxText
@@ -45,7 +46,7 @@ class TextEmbedding:
 		self.device = device
 
 		model_info = get_onnx_model_info(
-			model_name=model_name_or_path,
+			base_model_name=model_name_or_path,
 			quantize=quantize
 		)
 		
@@ -61,6 +62,11 @@ class TextEmbedding:
 				cache_dir=cache_folder
 			)
 			self.model_dir = model_dir
+		except RepositoryNotFoundError as e:
+			raise ValueError(
+				f"Model {model_name_or_path} (quantize={quantize}) "
+				f"is not supported in {type(self).__name__}."
+			)
 		except Exception as e:
 			raise e
 		
