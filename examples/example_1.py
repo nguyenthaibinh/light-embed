@@ -29,6 +29,8 @@ def main():
 	)
 	
 	print("embedding_model:", embedding_model)
+	print("embedding dimension:", embedding_model.get_embedding_dimension())
+	print("max sequence length:", embedding_model.get_max_seq_length())
 	
 	documents: List[str] = [
 		"This is a light-weight and fast python library for generating embeddings.",
