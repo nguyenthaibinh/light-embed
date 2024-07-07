@@ -6,6 +6,15 @@ import numpy as np
 
 
 class FastTokenizer:
+	"""
+	Initialize the model with a tokenizer and optional configuration.
+
+	Parameters:
+		tokenizer (tokenizers.Tokenizer): The tokenizer to be used by the model.
+		**kwargs: Additional keyword arguments for configuration.
+			- model_input_names (list, optional): A list of input names expected by the model.
+			  Defaults to `self.model_input_names`.
+	"""
 	model_input_names: List[str] = ["input_ids", "token_type_ids", "attention_mask"]
 	
 	def __init__(
@@ -19,6 +28,21 @@ class FastTokenizer:
 		)
 	
 	def tokenize(self, sentences: Union[str, List[str]]):
+		"""
+		Tokenize input sentences using the model's tokenizer.
+
+		Parameters:
+			sentences (Union[str, List[str]]): A single sentence (str) or a list
+				of sentences (List[str]) to be tokenized.
+
+		Returns:
+			dict: A dictionary with the following keys:
+				- "input_ids" (np.ndarray): Array of input IDs.
+				- "attention_mask" (np.ndarray, optional): Array of attention masks,
+					if "attention_mask" is in `self.model_input_names`.
+				- "token_type_ids" (np.ndarray, optional): Array of token type IDs,
+					if "token_type_ids" is in `self.model_input_names`.
+		"""
 		
 		if isinstance(sentences, str) or not hasattr(sentences, "__len__"):
 			# Cast an individual sentence to a list with length 1
@@ -44,6 +68,22 @@ class FastTokenizer:
 	def load(
 		input_path: Union[str, Path],
 		max_length: int = 512, **kwargs) -> tokenizers.Tokenizer:
+		
+		"""
+		Load a tokenizer from the specified input path.
+
+		Parameters:
+			input_path (Union[str, Path]): The directory containing the tokenizer configuration files.
+			max_length (int, optional): The maximum sequence length for truncation. Defaults to 512.
+			**kwargs: Additional keyword arguments passed to the FastTokenizer constructor.
+
+		Returns:
+			tokenizers.Tokenizer: An initialized tokenizer ready for use.
+
+		Raises:
+			ValueError: If any of the required configuration files (config.json, tokenizer.json,
+			tokenizer_config.json, special_tokens_map.json) are missing from the input path.
+		"""
 		
 		config_path = Path(input_path, "config.json")
 		if not config_path.exists():

@@ -1,48 +1,73 @@
-from typing import Optional, Dict, Any
+from typing import Optional
 from pathlib import Path
 from huggingface_hub import snapshot_download
+from huggingface_hub.utils._errors import RepositoryNotFoundError
 
-LIGHT_EMBED_ORG_NAME = "LightEmbed"
+LIGHT_EMBED_NAMESPACE = "LightEmbed"
 
-org_name_map = {
+namespace_map = {
 	"sentence-transformers": "sbert",
 	"BAAI": "baai",
 	"Snowflake": ""
 }
 
+def get_onnx_model_dir(
+	model_name_or_path: str,
+	quantize: bool,
+	cache_dir: Optional[str or Path] = None
+):
+	model_description_json_path = Path(
+		model_name_or_path, "model_description.json")
+	if model_description_json_path.exists():
+		model_dir = model_name_or_path
+	else:
+		onnx_model_name = get_onnx_model_info(
+			base_model_name=model_name_or_path,
+			quantize=quantize
+		)
+		
+		try:
+			model_dir = download_onnx_model(
+				repo_id=onnx_model_name,
+				cache_dir=cache_dir
+			)
+		except RepositoryNotFoundError as _:
+			raise ValueError(
+				f"Model {model_name_or_path} (quantize={quantize}) "
+				f"is not supported in {LIGHT_EMBED_NAMESPACE}."
+			)
+		except Exception as e:
+			raise e
+	return model_dir
+	
+
 def get_onnx_model_info(
 	base_model_name: str,
 	quantize: bool
 ):
-	org_name, model_suffix = base_model_name.split("/")
-	org_short_name = org_name_map.get(org_name, "")
+	namespace, model_id = base_model_name.split("/")
+	short_namespace = namespace_map.get(namespace, "")
 	
-	if org_short_name == LIGHT_EMBED_ORG_NAME:
+	if namespace == LIGHT_EMBED_NAMESPACE:
 		onnx_model_name = base_model_name
 	else:
-		if org_short_name != "":
+		if short_namespace != "":
 			if quantize:
-				onnx_model_suffix = f"{org_short_name}-{model_suffix}-onnx-quantized"
+				onnx_model_id = f"{short_namespace}-{model_id}-onnx-quantized"
 			else:
-				onnx_model_suffix = f"{org_short_name}-{model_suffix}-onnx"
+				onnx_model_id = f"{short_namespace}-{model_id}-onnx"
 		else:
 			if quantize:
-				onnx_model_suffix = f"{model_suffix}-onnx-quantized"
+				onnx_model_id = f"{model_id}-onnx-quantized"
 			else:
-				onnx_model_suffix = f"{model_suffix}-onnx"
+				onnx_model_id = f"{model_id}-onnx"
 
-		onnx_model_name = f"{LIGHT_EMBED_ORG_NAME}/{onnx_model_suffix}"
-		
-	model_info = {
-		"model_name": onnx_model_name,
-		"base_model": base_model_name,
-		"quantize": str(quantize),
-		"model_file": "model.onnx"
-	}
-	return model_info
+		onnx_model_name = f"{LIGHT_EMBED_NAMESPACE}/{onnx_model_id}"
 
-def download_model_from_huggingface(
-	model_name: str,
+	return onnx_model_name
+
+def download_huggingface_model(
+	repo_id: str,
 	cache_dir: Optional[str or Path] = None,
 	**kwargs) -> str:
 	allow_patterns = [
@@ -52,12 +77,13 @@ def download_model_from_huggingface(
 		"special_tokens_map.json",
 		"preprocessor_config.json",
 		"modules.json",
+		"model_description.json",
 		"*.onnx",
 		"1_Pooling/*"
 	]
 	
 	model_dir = snapshot_download(
-		repo_id=model_name,
+		repo_id=repo_id,
 		allow_patterns=allow_patterns,
 		cache_dir=cache_dir,
 		local_files_only=kwargs.get("local_files_only", False),
@@ -66,12 +92,11 @@ def download_model_from_huggingface(
 
 
 def download_onnx_model(
-	model_info: Dict[str, Any],
+	repo_id: str,
 	cache_dir: Optional[str or Path] = None
 ) -> str:
-	model_name = model_info["model_name"]
-	model_dir = download_model_from_huggingface(
-		model_name=model_name,
+	model_dir = download_huggingface_model(
+		repo_id=repo_id,
 		cache_dir=cache_dir
 	)
 	return model_dir
