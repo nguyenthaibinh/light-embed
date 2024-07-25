@@ -5,7 +5,7 @@ import json
 from light_embed.utils.model import get_onnx_model_config, download_onnx_model
 from light_embed.utils.functions import normalize, quantize_embeddings
 from light_embed.modules import OnnxText, supported_text_embedding_models, Pooling, Normalize
-from light_embed.modules import FastTokenizer
+from light_embed.modules import Tokenizer
 import logging
 
 logger = logging.getLogger(__name__)
@@ -66,7 +66,7 @@ class TextEmbedding:
 		model_input_names = self.modules[0].model_input_names
 
 		# Load tokenizer from file
-		self.tokenizer = FastTokenizer.load(
+		self.tokenizer = Tokenizer.load(
 			input_path=self.model_dir, model_input_names=model_input_names)
 		
 	def _load_model_description(self):

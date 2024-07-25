@@ -5,7 +5,7 @@ import json
 import numpy as np
 
 
-class FastTokenizer:
+class Tokenizer:
 	"""
 	Initialize the model with a tokenizer and optional configuration.
 
@@ -75,7 +75,7 @@ class FastTokenizer:
 		Parameters:
 			input_path (Union[str, Path]): The directory containing the tokenizer configuration files.
 			max_length (int, optional): The maximum sequence length for truncation. Defaults to 512.
-			**kwargs: Additional keyword arguments passed to the FastTokenizer constructor.
+			**kwargs: Additional keyword arguments passed to the Tokenizer constructor.
 
 		Returns:
 			tokenizers.Tokenizer: An initialized tokenizer ready for use.
@@ -126,4 +126,4 @@ class FastTokenizer:
 				tokenizer.add_special_tokens(
 					[tokenizers.AddedToken(**token)])
 		
-		return FastTokenizer(tokenizer, **kwargs)
+		return Tokenizer(tokenizer, **kwargs)
