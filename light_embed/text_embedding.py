@@ -2,9 +2,9 @@ from typing import Optional, Union, List, Literal
 from pathlib import Path
 import numpy as np
 import json
-from light_embed.utils.model import get_onnx_model_dir
+from light_embed.utils.model import get_onnx_model_config, download_onnx_model
 from light_embed.utils.functions import normalize, quantize_embeddings
-from light_embed.modules import OnnxText
+from light_embed.modules import OnnxText, supported_text_embedding_models, Pooling, Normalize
 from light_embed.modules import FastTokenizer
 import logging
 
@@ -44,19 +44,26 @@ class TextEmbedding:
 		self.model_name_or_path = model_name_or_path
 		self.session = None
 		self.device = device
-
-		self.model_dir = get_onnx_model_dir(
-			model_name_or_path=model_name_or_path,
-			cache_dir=cache_folder,
-			quantize=quantize
+		
+		model_config = get_onnx_model_config(
+			base_model_name=model_name_or_path,
+			quantize=quantize,
+			supported_models=supported_text_embedding_models
 		)
 		
-		# Load model description
-		self._model_description = self._load_model_description()
+		if model_config is None:
+			raise ValueError(f"model {model_name_or_path} with quantize = {quantize} is not supported.")
+		
+		self.model_config = model_config
+
+		self.model_dir = download_onnx_model(
+			model_config=model_config,
+			cache_dir=cache_folder
+		)
 		
 		# Load sentence-transformers' onnx model
-		self.model = self._load_onnx_model()
-		model_input_names = self.model.model_input_names
+		self.modules = self._load_model()
+		model_input_names = self.modules[0].model_input_names
 
 		# Load tokenizer from file
 		self.tokenizer = FastTokenizer.load(
@@ -77,20 +84,35 @@ class TextEmbedding:
 		else:
 			model_description = None
 		return model_description
-		
-	def _load_onnx_model(self):
-		"""
-		Load the ONNX model specified in the model description.
+	
+	def _load_model(self):
+		default_modules = [
+			{
+				"name": "onnx_model",
+				"path": "model.onnx"
+			}
+		]
+		modules_config = self.model_config.get("modules", default_modules)
+		modules = []
+		for module_config in modules_config:
+			module_type = module_config.get("type").lower()
+			module_path = Path(self.model_dir, module_config.get("path"))
+			if module_type == "onnx_model":
+				ort_output_keys = self.model_config.get("ort_output_keys", None)
+				module = OnnxText.load(
+					input_path=module_path,
+					ort_output_keys=ort_output_keys,
+					device=self.device)
+			elif module_type == "pooling":
+				module = Pooling.load(input_path=module_path)
+			elif module_type == "normalize":
+				module = Normalize()
+			else:
+				continue
 
-		:return: OnnxText: An instance of the loaded ONNX model.
-		"""
-		onnx_model_file = self._model_description.get(
-			"model_file", "model.onnx")
-		onnx_model_path = Path(self.model_dir, onnx_model_file)
+			modules.append(module)
 		
-		# Load sentence-transformers' onnx model
-		model = OnnxText.load(input_path=onnx_model_path, device=self.device)
-		return model
+		return modules
 		
 	def tokenize(
 		self,
@@ -104,6 +126,12 @@ class TextEmbedding:
 		:return: List: A list of tokenized representations of the input texts.
 		"""
 		return self.tokenizer.tokenize(texts)
+	
+	def apply(self, features):
+		for module in self.modules:
+			features = module.apply(features)
+		
+		return features
 	
 	def encode(
 		self,
@@ -143,7 +171,7 @@ class TextEmbedding:
 			sentences_batch = sentences_sorted[start_index: start_index + batch_size]
 			features = self.tokenize(sentences_batch)
 
-			onnx_result = self.model.apply(features)
+			onnx_result = self.apply(features)
 			
 			if output_value == "token_embeddings":
 				embeddings = onnx_result.get("token_embeddings")
@@ -192,39 +220,3 @@ class TextEmbedding:
 			return len(text)
 		else:
 			return sum([len(t) for t in text])  # Sum of length of individual strings
-	
-	def get_embedding_dimension(self):
-		"""
-		Retrieve the embedding dimension from the model description.
-
-		This method fetches the value associated with the "embedding_dim" key from
-		the model description if it is stored as a dictionary. The embedding dimension
-		is an important parameter in various machine learning models, particularly those
-		involving embeddings such as NLP models or recommendation systems.
-
-		Returns:
-			int or None: The embedding dimension if present in the model description
-			dictionary; otherwise, None.
-		"""
-		if isinstance(self._model_description, dict):
-			return self._model_description.get("embedding_dim")
-		else:
-			return None
-	
-	def get_max_seq_length(self):
-		"""
-		Retrieve the maximum sequence length from the model description.
-
-		This method fetches the value associated with the "max_seq_length" key from
-		the model description if it is stored as a dictionary. The maximum sequence
-		length is an important parameter in various machine learning models, especially
-		those involving sequential data such as NLP models or time series analysis.
-
-		Returns:
-			int or None: The maximum sequence length if present in the model description
-			dictionary; otherwise, None.
-		"""
-		if isinstance(self._model_description, dict):
-			return self._model_description.get("max_seq_length")
-		else:
-			return None

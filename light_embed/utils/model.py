@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List, Dict, Union
 from pathlib import Path
 from huggingface_hub import snapshot_download
 from huggingface_hub.utils._errors import RepositoryNotFoundError
@@ -41,46 +41,44 @@ def get_onnx_model_dir(
 	return model_dir
 	
 
-def get_onnx_model_info(
+def get_onnx_model_config(
 	base_model_name: str,
-	quantize: bool
-):
-	namespace, model_id = base_model_name.split("/")
-	short_namespace = namespace_map.get(namespace, "")
-	
-	if namespace == LIGHT_EMBED_NAMESPACE:
-		onnx_model_name = base_model_name
-	else:
-		if short_namespace != "":
-			if quantize:
-				onnx_model_id = f"{short_namespace}-{model_id}-onnx-quantized"
-			else:
-				onnx_model_id = f"{short_namespace}-{model_id}-onnx"
-		else:
-			if quantize:
-				onnx_model_id = f"{model_id}-onnx-quantized"
-			else:
-				onnx_model_id = f"{model_id}-onnx"
-
-		onnx_model_name = f"{LIGHT_EMBED_NAMESPACE}/{onnx_model_id}"
-
-	return onnx_model_name
+	quantize: bool,
+	supported_models: List[Dict[str, Union[str, Dict[str, str]]]]
+) -> Dict[str, Union[str, Dict[str, str]]]:
+	quantize_str = str(quantize).lower()
+	for model_config in supported_models:
+		model_name = model_config.get("model_name", None)
+		base_model = model_config.get("base_model", None)
+		quantized = model_config.get("quantized", "false")
+		if base_model_name in [model_name, base_model] and quantize_str == quantized:
+			return model_config
+	return None
 
 def download_huggingface_model(
-	repo_id: str,
+	model_config: Dict,
 	cache_dir: Optional[str or Path] = None,
 	**kwargs) -> str:
+
+	repo_id = model_config.get("model_name")
+	modules_config = model_config.get("modules")
+
 	allow_patterns = [
 		"config.json",
 		"tokenizer.json",
 		"tokenizer_config.json",
 		"special_tokens_map.json",
 		"preprocessor_config.json",
-		"modules.json",
-		"model_description.json",
-		"*.onnx",
-		"1_Pooling/*"
 	]
+
+	for module_config in modules_config:
+		module_type = module_config.get("type")
+		module_path = module_config.get("path")
+		
+		if module_type == "onnx_model":
+			allow_patterns.append(module_path)
+		else:
+			allow_patterns.append(f"{module_path}/*")
 	
 	model_dir = snapshot_download(
 		repo_id=repo_id,
@@ -92,11 +90,11 @@ def download_huggingface_model(
 
 
 def download_onnx_model(
-	repo_id: str,
+	model_config: Dict[str, Union[str, Dict[str, str]]],
 	cache_dir: Optional[str or Path] = None
 ) -> str:
 	model_dir = download_huggingface_model(
-		repo_id=repo_id,
+		model_config=model_config,
 		cache_dir=cache_dir
 	)
 	return model_dir
