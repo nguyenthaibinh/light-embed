@@ -1,6 +1,7 @@
 *local*
 *.bk
 .idea/*
+/test/*
 
 !.env.local
 
