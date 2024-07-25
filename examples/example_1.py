@@ -14,8 +14,12 @@ def main():
 		"--model-name", type=str,
 		default="sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
 	)
+	parser.add_argument(
+		"--normalize-embeddings", default=False, action="store_true"
+	)
 	args = parser.parse_args()
 	model_name = args.model_name
+	normalize_embeddings = args.normalize_embeddings
 
 	load_dotenv()
 
@@ -29,8 +33,6 @@ def main():
 	)
 	
 	print("embedding_model:", embedding_model)
-	print("embedding dimension:", embedding_model.get_embedding_dimension())
-	print("max sequence length:", embedding_model.get_max_seq_length())
 	
 	documents: List[str] = [
 		"This is a light-weight and fast python library for generating embeddings.",
@@ -41,7 +43,8 @@ def main():
 	embeddings = embedding_model.encode(
 		documents, output_value="sentence_embedding",
 		return_as_array=False,
-		return_as_list=True
+		return_as_list=True,
+		normalize_embeddings=normalize_embeddings
 	)
 	elapsed_time = timer() - start_embed
 	
