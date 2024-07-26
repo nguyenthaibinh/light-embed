@@ -1,47 +1,8 @@
 from typing import Optional, List, Dict, Union
 from pathlib import Path
 from huggingface_hub import snapshot_download
-from huggingface_hub.utils._errors import RepositoryNotFoundError
-
-LIGHT_EMBED_NAMESPACE = "LightEmbed"
 
 REPO_ORG_NAME = "LightEmbed"
-
-namespace_map = {
-	"sentence-transformers": "sbert",
-	"BAAI": "baai",
-	"Snowflake": ""
-}
-
-def get_onnx_model_dir(
-	model_name_or_path: str,
-	quantize: bool,
-	cache_dir: Optional[str or Path] = None
-):
-	model_description_json_path = Path(
-		model_name_or_path, "model_description.json")
-	if model_description_json_path.exists():
-		model_dir = model_name_or_path
-	else:
-		onnx_model_name = get_onnx_model_info(
-			base_model_name=model_name_or_path,
-			quantize=quantize
-		)
-		
-		try:
-			model_dir = download_onnx_model(
-				repo_id=onnx_model_name,
-				cache_dir=cache_dir
-			)
-		except RepositoryNotFoundError as _:
-			raise ValueError(
-				f"Model {model_name_or_path} (quantize={quantize}) "
-				f"is not supported in {LIGHT_EMBED_NAMESPACE}."
-			)
-		except Exception as e:
-			raise e
-	return model_dir
-	
 
 def get_onnx_model_config(
 	base_model_name: str,
