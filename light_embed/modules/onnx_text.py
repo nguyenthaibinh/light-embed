@@ -154,8 +154,6 @@ supported_text_embedding_models = [
 
 
 class OnnxText(OnnxModel):
-	ort_output_keys = ["token_embeddings"]
-	
 	OUTPUT_NAMES = (
 		"last_hidden_state",
 		"token_embeddings",

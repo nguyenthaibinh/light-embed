@@ -98,11 +98,8 @@ class TextEmbedding:
 			module_type = module_config.get("type").lower()
 			module_path = Path(self.model_dir, module_config.get("path"))
 			if module_type == "onnx_model":
-				ort_output_keys = module_config.get("output_keys", None)
 				module = OnnxText.load(
-					input_path=module_path,
-					ort_output_keys=ort_output_keys,
-					device=self.device)
+					input_path=module_path, device=self.device)
 			elif module_type == "pooling":
 				module = Pooling.load(input_path=module_path)
 			elif module_type == "normalize":
