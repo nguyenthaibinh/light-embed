@@ -52,7 +52,7 @@ class TextEmbedding:
 		)
 		
 		if model_config is None:
-			raise ValueError(f"model {model_name_or_path} with quantize = {quantize} is not supported.")
+			raise ValueError(f"model {model_name_or_path} with quantize={quantize} is not supported.")
 		
 		self.model_config = model_config
 
@@ -98,7 +98,7 @@ class TextEmbedding:
 			module_type = module_config.get("type").lower()
 			module_path = Path(self.model_dir, module_config.get("path"))
 			if module_type == "onnx_model":
-				ort_output_keys = self.model_config.get("ort_output_keys", None)
+				ort_output_keys = module_config.get("output_keys", None)
 				module = OnnxText.load(
 					input_path=module_path,
 					ort_output_keys=ort_output_keys,

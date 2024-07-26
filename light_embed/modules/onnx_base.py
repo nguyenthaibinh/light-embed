@@ -45,6 +45,13 @@ class OnnxModel:
 		]
 		return input_names
 	
+	@property
+	def model_output_names(self):
+		output_names = [
+			output_meta.name for output_meta in self._session.get_outputs()
+		]
+		return output_names
+	
 	def apply(
 		self,
 		features: Dict[str, np.array]
