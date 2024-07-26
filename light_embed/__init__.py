@@ -7,4 +7,6 @@ except importlib.metadata.PackageNotFoundError as _:
     version = "0.1.0"
 
 __version__ = version
-__all__ = ["TextEmbedding"]
+__all__ = [
+    "TextEmbedding",
+]

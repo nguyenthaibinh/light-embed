@@ -5,6 +5,8 @@ from huggingface_hub.utils._errors import RepositoryNotFoundError
 
 LIGHT_EMBED_NAMESPACE = "LightEmbed"
 
+REPO_ORG_NAME = "LightEmbed"
+
 namespace_map = {
 	"sentence-transformers": "sbert",
 	"BAAI": "baai",

@@ -2,6 +2,7 @@ from typing import Dict, Union
 import numpy as np
 from pathlib import Path
 from .onnx_base import OnnxModel
+from light_embed.utils import REPO_ORG_NAME
 import logging
 
 logger = logging.getLogger(__name__)
@@ -9,7 +10,7 @@ logger = logging.getLogger(__name__)
 supported_text_embedding_models = [
 	# sentence-transformers models
 	{
-		"model_name": "LightEmbed/all-mpnet-base-v2-onnx",
+		"model_name": f"{REPO_ORG_NAME}/all-mpnet-base-v2-onnx",
 		"base_model": "sentence-transformers/all-mpnet-base-v2",
 		"quantized": "false",
 		"modules": [
@@ -20,7 +21,7 @@ supported_text_embedding_models = [
 		]
 	},
 	{
-		"model_name": "LightEmbed/all-mpnet-base-v1-onnx",
+		"model_name": f"{REPO_ORG_NAME}/all-mpnet-base-v1-onnx",
 		"base_model": "sentence-transformers/all-mpnet-base-v1",
 		"quantized": "false",
 		"modules": [
@@ -39,7 +40,7 @@ supported_text_embedding_models = [
 		]
 	},
 	{
-		"model_name": "LightEmbed/LaBSE-onnx",
+		"model_name": f"{REPO_ORG_NAME}/LaBSE-onnx",
 		"base_model": "sentence-transformers/LaBSE",
 		"quantized": "false",
 		"modules": [
@@ -58,7 +59,7 @@ supported_text_embedding_models = [
 		]
 	},
 	{
-		"model_name": "LightEmbed/sentence-t5-base-onnx",
+		"model_name": f"{REPO_ORG_NAME}/sentence-t5-base-onnx",
 		"base_model": "sentence-transformers/sentence-t5-base",
 		"quantized": "false",
 		"modules": [
@@ -79,7 +80,7 @@ supported_text_embedding_models = [
 		]
 	},
 	{
-		"model_name": "LightEmbed/all-MiniLM-L12-v2-onnx",
+		"model_name": f"{REPO_ORG_NAME}/all-MiniLM-L12-v2-onnx",
 		"base_model": "sentence-transformers/all-MiniLM-L12-v2",
 		"quantized": "false",
 		"modules": [
@@ -126,7 +127,7 @@ supported_text_embedding_models = [
 		]
 	},
 	{
-		"model_name": "LightEmbed/sentence-bert-swedish-cased-onnx",
+		"model_name": f"{REPO_ORG_NAME}/sentence-bert-swedish-cased-onnx",
 		"base_model": "KBLab/sentence-bert-swedish-cased",
 		"quantized": "false",
 		"modules": [
