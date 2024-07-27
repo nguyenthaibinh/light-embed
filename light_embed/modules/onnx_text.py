@@ -28,14 +28,6 @@ supported_text_embedding_models = [
 			{
 				"type": "onnx_model",
 				"path": "model.onnx"
-			},
-			{
-				"type": "pooling",
-				"path": "1_Pooling"
-			},
-			{
-				"type": "normalize",
-				"path": "2_Normalize"
 			}
 		]
 	},

@@ -2,7 +2,7 @@ from typing import Optional, List, Dict, Union
 from pathlib import Path
 from huggingface_hub import snapshot_download
 
-REPO_ORG_NAME = "LightEmbed"
+REPO_ORG_NAME = "onnx-models"
 
 def get_onnx_model_config(
 	base_model_name: str,

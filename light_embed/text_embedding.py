@@ -39,7 +39,8 @@ class TextEmbedding:
 			model_name_or_path: str,
 			cache_folder: Optional[str or Path] = None,
 			quantize: bool = False,
-			device: str = "cpu"
+			device: str = "cpu",
+			**kwargs
 	) -> None:
 		self.model_name_or_path = model_name_or_path
 		self.session = None
@@ -52,7 +53,14 @@ class TextEmbedding:
 		)
 		
 		if model_config is None:
-			raise ValueError(f"model {model_name_or_path} with quantize={quantize} is not supported.")
+			modules_config = kwargs.get("modules_config", None)
+			if modules_config is None:
+				raise ValueError(f"model {model_name_or_path} with quantize={quantize} is not supported.")
+			
+			model_config = {
+				"model_name": model_name_or_path,
+				"modules": modules_config
+			}
 		
 		self.model_config = model_config
 
