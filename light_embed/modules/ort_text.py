@@ -234,7 +234,3 @@ class OrtText(OrtModel):
 		out_features["attention_mask"] = features["attention_mask"]
 		
 		return out_features
-	
-	@classmethod
-	def load(cls, input_path: Union[str, Path], **kwargs):
-		return cls(input_path, **kwargs)

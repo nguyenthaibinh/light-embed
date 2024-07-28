@@ -59,6 +59,6 @@ class OrtModel:
 		ort_output = self._session.run(None, features)
 		return ort_output
 	
-	@staticmethod
-	def load(input_path: Union[str, Path], **kwargs):
-		return OnnxModel(input_path, **kwargs)
+	@classmethod
+	def load(cls, input_path: Union[str, Path], **kwargs):
+		return cls(input_path, **kwargs)
