@@ -54,11 +54,8 @@ def main():
 	elapsed_time = timer() - start_embed
 	
 	print("embeddings:\n", embeddings)
-	print("type(embeddings):", type(embeddings))
-	
-	print("len(embeddings[0]):", len(embeddings[0]))
-	print("type(embeddings[0]):", type(embeddings[0]))
 	print("model_name:", model_name)
+	print("embedding dimension:", len(embeddings[0]))
 	print(f"elapsed time: {elapsed_time:.2f}")
 	
 	return None
