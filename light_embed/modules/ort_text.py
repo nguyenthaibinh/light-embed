@@ -7,7 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-supported_text_embedding_models = [
+managed_models = [
 	# sentence-transformers models
 	{
 		"model_name": f"{REPO_ORG_NAME}/all-mpnet-base-v2-onnx",

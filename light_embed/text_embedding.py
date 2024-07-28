@@ -2,9 +2,9 @@ from typing import Optional, Union, List, Literal
 from pathlib import Path
 import numpy as np
 import json
-from light_embed.utils.model import get_onnx_model_config, download_onnx_model
+from light_embed.utils.model import get_managed_model_config, download_onnx_model
 from light_embed.utils.functions import normalize, quantize_embeddings
-from light_embed.modules import OrtText, supported_text_embedding_models, Pooling, Normalize
+from light_embed.modules import OrtText, managed_text_models, Pooling, Normalize
 from light_embed.modules import Tokenizer
 import logging
 
@@ -46,10 +46,10 @@ class TextEmbedding:
 		self.session = None
 		self.device = device
 		
-		model_config = get_onnx_model_config(
+		model_config = get_managed_model_config(
 			base_model_name=model_name_or_path,
 			quantize=quantize,
-			supported_models=supported_text_embedding_models
+			managed_models=managed_text_models
 		)
 		
 		if model_config is None:

@@ -4,13 +4,13 @@ from huggingface_hub import snapshot_download
 
 REPO_ORG_NAME = "onnx-models"
 
-def get_onnx_model_config(
+def get_managed_model_config(
 	base_model_name: str,
 	quantize: bool,
-	supported_models: List[Dict[str, Union[str, Dict[str, str]]]]
+	managed_models: List[Dict[str, Union[str, Dict[str, str]]]]
 ) -> Dict[str, Union[str, Dict[str, str]]]:
 	quantize_str = str(quantize).lower()
-	for model_config in supported_models:
+	for model_config in managed_models:
 		model_name = model_config.get("model_name", None)
 		base_model = model_config.get("base_model", None)
 		quantized = model_config.get("quantized", "false")
