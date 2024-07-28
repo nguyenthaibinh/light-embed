@@ -10,11 +10,11 @@ class Normalize:
 
 	def __init__(self):
 		super(Normalize, self).__init__()
-
+		
 	@staticmethod
-	def apply(
+	def __call__(
 		features: Dict[str, np.array],
-		p=2, dim=1, eps=1e-12):
+		p=2, dim=1, eps=1e-12) -> Dict[str, np.ndarray]:
 		# Calculate the Lp norm along the specified dimension
 		input_array = features.get("sentence_embedding")
 		norm = np.linalg.norm(input_array, ord=p, axis=dim, keepdims=True)

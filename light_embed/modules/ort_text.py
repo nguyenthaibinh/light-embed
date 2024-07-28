@@ -218,12 +218,12 @@ class OrtText(OrtModel):
 		if output_name_map is not None and isinstance(output_name_map, dict):
 			self.output_name_map.update(output_name_map)
 	
-	def apply(
+	def __call__(
 		self,
 		features: Dict[str, np.array],
 		**kwargs
-	):
-		ort_output = super().apply(features)
+	) -> Dict[str, np.ndarray]:
+		ort_output = super().__call__(features)
 		
 		out_features = dict()
 		for i, output_name in enumerate(self.model_output_names):

@@ -130,9 +130,9 @@ class Pooling:
 
 		return "+".join(modes)
 
-	def apply(
+	def __call__(
 			self,
-			features: Dict[str, np.ndarray]) -> np.ndarray:
+			features: Dict[str, np.ndarray]) -> Dict[str, np.ndarray]:
 		"""
 		Applies the configured pooling strategy to the input features and returns the resulting embeddings.
 		:param features: A dictionary containing the token embeddings and attention masks.

@@ -133,10 +133,10 @@ class TextEmbedding:
 		:return: List: A list of tokenized representations of the input texts.
 		"""
 		return self.tokenizer.tokenize(texts)
-	
+
 	def apply(self, features):
 		for module in self.modules:
-			features = module.apply(features)
+			features = module(features)
 		
 		return features
 	

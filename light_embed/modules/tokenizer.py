@@ -1,4 +1,4 @@
-from typing import Union, List
+from typing import Union, List, Dict
 from pathlib import Path
 import tokenizers
 import json
@@ -26,8 +26,12 @@ class Tokenizer:
 		self.model_input_names = kwargs.pop(
 			"model_input_names", self.model_input_names
 		)
+		
+	def __call__(self, sentences: Union[str, List[str]]):
+		return self.tokenize(sentences=sentences)
 	
-	def tokenize(self, sentences: Union[str, List[str]]):
+	def tokenize(
+		self, sentences: Union[str, List[str]]) -> Dict[str, np.ndarray]:
 		"""
 		Tokenize input sentences using the model's tokenizer.
 

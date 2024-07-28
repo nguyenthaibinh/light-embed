@@ -52,10 +52,10 @@ class OrtModel:
 		]
 		return output_names
 	
-	def apply(
+	def __call__(
 		self,
 		features: Dict[str, np.array]
-	):
+	) -> Dict[str, np.ndarray]:
 		ort_output = self._session.run(None, features)
 		return ort_output
 	
