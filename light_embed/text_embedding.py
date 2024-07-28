@@ -106,8 +106,10 @@ class TextEmbedding:
 			module_type = module_config.get("type").lower()
 			module_path = Path(self.model_dir, module_config.get("path"))
 			if module_type == "onnx_model":
+				output_name_map = module_config.get("output_name_map")
 				module = OnnxText.load(
-					input_path=module_path, device=self.device)
+					input_path=module_path, output_name_map=output_name_map,
+					device=self.device)
 			elif module_type == "pooling":
 				module = Pooling.load(input_path=module_path)
 			elif module_type == "normalize":

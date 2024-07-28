@@ -201,11 +201,11 @@ supported_text_embedding_models = [
 
 
 class OnnxText(OnnxModel):
-	OUTPUT_NAMES = (
-		"last_hidden_state",
-		"token_embeddings",
-		"sentence_embedding"
-	)
+	OUTPUT_NAMES = ("token_embeddings", "sentence_embedding")
+	
+	output_name_map = {
+		"last_hidden_state": "token_embeddings"
+	}
 
 	def __init__(
 		self,
@@ -214,8 +214,9 @@ class OnnxText(OnnxModel):
 	):
 		super().__init__(model_path, **kwargs)
 		
-		if not any(element in self.model_output_names for element in self.OUTPUT_NAMES):
-			raise ValueError(f"Onnx output features must contain one of these features {self.OUTPUT_NAMES}.")
+		output_name_map = kwargs.get("output_name_map")
+		if output_name_map is not None and isinstance(output_name_map, dict):
+			self.output_name_map.update(output_name_map)
 	
 	def apply(
 		self,
@@ -224,12 +225,11 @@ class OnnxText(OnnxModel):
 	):
 		ort_output = super().apply(features)
 		
-		out_features = {
-			key: ort_output[i] for i, key in enumerate(self.model_output_names)
-		}
-		
-		if "token_embeddings" not in out_features and "last_hidden_state" in out_features:
-			out_features["token_embeddings"] = out_features.pop('last_hidden_state')
+		out_features = dict()
+		for i, output_name in enumerate(self.model_output_names):
+			mapped_name = self.output_name_map.get(output_name, output_name)
+			if mapped_name in self.OUTPUT_NAMES:
+				out_features[mapped_name] = ort_output[i]
 		
 		out_features["attention_mask"] = features["attention_mask"]
 		
