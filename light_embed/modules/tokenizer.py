@@ -85,41 +85,49 @@ class Tokenizer:
 			tokenizer_config.json, special_tokens_map.json) are missing from the input path.
 		"""
 		
-		config_path = Path(input_path, "config.json")
-		if not config_path.exists():
-			raise ValueError(f"Could not find config.json in {input_path}")
+		required_files = [
+			"config.json", "tokenizer.json",
+			"tokenizer_config.json", "special_tokens_map.json"
+		]
 		
-		tokenizer_path = Path(input_path, "tokenizer.json")
-		if not tokenizer_path.exists():
-			raise ValueError(f"Could not find tokenizer.json in {input_path}")
+		missing_files = [
+			file for file in required_files
+			if not Path(input_path, file).exists()
+		]
+
+		if missing_files:
+			raise ValueError(
+				f"Could not find the following files in {input_path}: "
+				f"{', '.join(missing_files)}"
+			)
 		
-		tokenizer_config_path = Path(input_path, "tokenizer_config.json")
-		if not tokenizer_config_path.exists():
-			raise ValueError(f"Could not find tokenizer_config.json in {input_path}")
+		# Check and load required files
+		config_data = dict()
+		for file_name in required_files:
+			if file_name != "tokenizer.json":
+				file_path = str(Path(input_path, file_name))
+				key = file_name.rsplit('.', 1)[0]
+				with open(file_path) as f:
+					config_data[key] = json.load(f)
 		
-		tokens_map_path = Path(input_path, "special_tokens_map.json")
-		if not tokens_map_path.exists():
-			raise ValueError(f"Could not find special_tokens_map.json in {input_path}")
+		# Load tokenizer from file
+		tokenizer_path = str(Path(input_path, "tokenizer.json"))
+		tokenizer = tokenizers.Tokenizer.from_file(tokenizer_path)
 		
-		with open(str(config_path)) as config_file:
-			config = json.load(config_file)
-		
-		with open(str(tokenizer_config_path)) as tokenizer_config_file:
-			tokenizer_config = json.load(tokenizer_config_file)
-		
-		with open(str(tokens_map_path)) as tokens_map_file:
-			tokens_map = json.load(tokens_map_file)
-		
-		tokenizer_path_str = str(tokenizer_path)
-		tokenizer = tokenizers.Tokenizer.from_file(tokenizer_path_str)
+		# Enable truncation and padding
+		model_max_length = config_data["tokenizer_config"]["model_max_length"]
 		tokenizer.enable_truncation(
-			max_length=min(tokenizer_config["model_max_length"], max_length)
+			max_length=min(model_max_length, max_length)
 		)
+
+		pad_token_id = config_data["config"].get("pad_token_id", 0)
+		pad_token = config_data["tokenizer_config"]["pad_token"]
 		tokenizer.enable_padding(
-			pad_id=config.get("pad_token_id", 0), pad_token=tokenizer_config["pad_token"]
+			pad_id=pad_token_id, pad_token=pad_token
 		)
 		
-		for token in tokens_map.values():
+		# Add special tokens
+		for token in config_data["special_tokens_map"].values():
 			if isinstance(token, str):
 				tokenizer.add_special_tokens([token])
 			elif isinstance(token, dict):
