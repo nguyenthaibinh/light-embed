@@ -1,7 +1,7 @@
 from typing import Dict, Union
 import numpy as np
 from pathlib import Path
-from .onnx_base import OnnxModel
+from .ort_base import OrtModel
 from light_embed.utils import REPO_ORG_NAME
 import logging
 
@@ -200,7 +200,7 @@ supported_text_embedding_models = [
 ]
 
 
-class OnnxText(OnnxModel):
+class OrtText(OrtModel):
 	OUTPUT_NAMES = ("token_embeddings", "sentence_embedding")
 	
 	output_name_map = {
@@ -235,6 +235,6 @@ class OnnxText(OnnxModel):
 		
 		return out_features
 	
-	@staticmethod
-	def load(input_path: Union[str, Path], **kwargs):
-		return OnnxText(input_path, **kwargs)
+	@classmethod
+	def load(cls, input_path: Union[str, Path], **kwargs):
+		return cls(input_path, **kwargs)

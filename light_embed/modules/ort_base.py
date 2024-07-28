@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class OnnxModel:
+class OrtModel:
 	device = "cpu"
 	
 	def __init__(

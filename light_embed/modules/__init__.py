@@ -1,11 +1,11 @@
-from .onnx_text import OnnxText
+from .ort_text import OrtText
 from .tokenizer import Tokenizer
 from .pooling import Pooling
 from .normalize import Normalize
-from .onnx_text import supported_text_embedding_models
+from .ort_text import supported_text_embedding_models
 
 __all__ = [
-    "OnnxText",
+    "OrtText",
     "Tokenizer",
     "Pooling",
     "Normalize",

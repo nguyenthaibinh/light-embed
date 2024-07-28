@@ -4,7 +4,7 @@ import numpy as np
 import json
 from light_embed.utils.model import get_onnx_model_config, download_onnx_model
 from light_embed.utils.functions import normalize, quantize_embeddings
-from light_embed.modules import OnnxText, supported_text_embedding_models, Pooling, Normalize
+from light_embed.modules import OrtText, supported_text_embedding_models, Pooling, Normalize
 from light_embed.modules import Tokenizer
 import logging
 
@@ -107,7 +107,7 @@ class TextEmbedding:
 			module_path = Path(self.model_dir, module_config.get("path"))
 			if module_type == "onnx_model":
 				output_name_map = module_config.get("output_name_map")
-				module = OnnxText.load(
+				module = OrtText.load(
 					input_path=module_path, output_name_map=output_name_map,
 					device=self.device)
 			elif module_type == "pooling":
