@@ -50,12 +50,12 @@ class Tokenizer:
 		
 		encoded = self.tokenizer.encode_batch(sentences)
 		input_ids = np.array([e.ids for e in encoded])
-		attention_mask = np.array([e.attention_mask for e in encoded])
 		
 		features = {
 			"input_ids": np.array(input_ids, dtype=np.int64)
 		}
 		if "attention_mask" in self.model_input_names:
+			attention_mask = np.array([e.attention_mask for e in encoded])
 			features["attention_mask"] = np.array(attention_mask, dtype=np.int64)
 		
 		if "token_type_ids" in self.model_input_names:
