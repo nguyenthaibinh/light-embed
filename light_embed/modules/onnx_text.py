@@ -130,6 +130,60 @@ supported_text_embedding_models = [
 		]
 	},
 	{
+		"model_name": "BAAI/bge-base-en",
+		"quantized": "false",
+		"modules": [
+			{
+				"type": "onnx_model",
+				"path": "onnx/model.onnx"
+			},
+			{
+				"type": "pooling",
+				"path": "1_Pooling"
+			},
+			{
+				"type": "normalize",
+				"path": "2_Normalize"
+			}
+		]
+	},
+	{
+		"model_name": "BAAI/bge-base-en-v1.5",
+		"quantized": "false",
+		"modules": [
+			{
+				"type": "onnx_model",
+				"path": "onnx/model.onnx"
+			},
+			{
+				"type": "pooling",
+				"path": "1_Pooling"
+			},
+			{
+				"type": "normalize",
+				"path": "2_Normalize"
+			}
+		]
+	},
+	{
+		"model_name": "BAAI/bge-small-en-v1.5",
+		"quantized": "false",
+		"modules": [
+			{
+				"type": "onnx_model",
+				"path": "onnx/model.onnx"
+			},
+			{
+				"type": "pooling",
+				"path": "1_Pooling"
+			},
+			{
+				"type": "normalize",
+				"path": "2_Normalize"
+			}
+		]
+	},
+	{
 		"model_name": "jinaai/jina-embeddings-v2-base-en",
 		"quantized": "false",
 		"modules": [
