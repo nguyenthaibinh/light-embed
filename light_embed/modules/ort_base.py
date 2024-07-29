@@ -2,7 +2,6 @@ from typing import Dict, Union
 import numpy as np
 from pathlib import Path
 import onnxruntime
-import psutil
 import logging
 
 logger = logging.getLogger(__name__)
@@ -31,7 +30,6 @@ class OrtModel:
 		
 		sess_options = onnxruntime.SessionOptions()
 		sess_options.graph_optimization_level = onnxruntime.GraphOptimizationLevel.ORT_ENABLE_ALL
-		sess_options.intra_op_num_threads = psutil.cpu_count(logical=True)
 		
 		self._session = onnxruntime.InferenceSession(
 			str(model_path), sess_options,
@@ -57,6 +55,7 @@ class OrtModel:
 		features: Dict[str, np.array]
 	) -> Dict[str, np.ndarray]:
 		ort_output = self._session.run(None, features)
+
 		return ort_output
 	
 	@classmethod

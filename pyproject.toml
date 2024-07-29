@@ -19,7 +19,6 @@ dependencies = [
     "numpy==1.26.4",
     "huggingface_hub==0.20.3",
     "onnxruntime==1.18.0",
-    "psutil==5.9.8",
     "tokenizers==0.15.2"
 ]
 

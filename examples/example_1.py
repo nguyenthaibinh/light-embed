@@ -1,5 +1,4 @@
 import os
-from typing import List
 import light_embed
 from light_embed import TextEmbedding
 from dotenv import load_dotenv
@@ -12,7 +11,7 @@ def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument(
 		"--model-name", type=str,
-		default="sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
+		default="jinaai/jina-embeddings-v2-base-en"
 	)
 	parser.add_argument(
 		"--normalize-embeddings", default=False, action="store_true"

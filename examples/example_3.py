@@ -1,5 +1,4 @@
 import os
-from typing import List
 import light_embed
 from light_embed import TextEmbedding
 from dotenv import load_dotenv

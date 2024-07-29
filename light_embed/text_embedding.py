@@ -39,25 +39,19 @@ class TextEmbedding:
 			model_name: str,
 			cache_folder: Optional[str or Path] = None,
 			quantize: Union[bool, str] = None,
-			device: str = "cpu",
+			device: Optional[str] = None,
 			**kwargs
 	) -> None:
 		self.model_name = model_name
 		self.session = None
 		self.device = device
 		
-		managed_model_config = get_managed_model_config(
-			base_model_name=model_name,
-			quantize=quantize,
-			managed_models=managed_text_models
-		)
-		if managed_model_config is not None:
-			model_config = managed_model_config
-		else:
-			onnx_file = kwargs.get("onnx_file")
-			if onnx_file is None:
-				raise ValueError(f"model {model_name} with quantize={quantize} is not supported.")
-				
+		onnx_file = kwargs.get("onnx_file")
+		
+		# if model_file is provided then use model config
+		# given from command line
+		# otherwise, use light-embed managed model config
+		if onnx_file is not None:
 			model_config = {
 				"model_name": model_name,
 				"onnx_file": onnx_file
@@ -70,11 +64,23 @@ class TextEmbedding:
 				pooling_mode = kwargs.get("pooling_mode")
 				if isinstance(pooling_mode, str):
 					model_config["pooling_mode"] = pooling_mode
-					
+			
 			normalize_bool = kwargs.get("normalize", False)
 			if isinstance(normalize_bool, bool):
 				model_config["normalize"] = normalize_bool
 		
+		else:
+			model_config = get_managed_model_config(
+				base_model_name=model_name,
+				quantize=quantize,
+				managed_models=managed_text_models
+			)
+			
+			if model_config is None:
+				raise ValueError(
+					f"model {model_name} with quantize={quantize} is not supported."
+				)
+
 		self.model_config = model_config
 
 		self.model_dir = download_onnx_model(

@@ -1,15 +1,30 @@
 import os
-from typing import List
 import light_embed
 from light_embed import TextEmbedding
 from dotenv import load_dotenv
 from timeit import default_timer as timer
+import argparse
 
 
 def main():
 	print(f"light_embed.__version__: {light_embed.__version__}")
 	
-	model_name = "jinaai/jina-embeddings-v2-base-en"
+	parser = argparse.ArgumentParser()
+	parser.add_argument(
+		"--model-name", type=str,
+		default="jinaai/jina-embeddings-v2-base-en"
+	)
+	parser.add_argument(
+		"--onnx-file", type=str, default="model.onnx",
+		help="Relative path to the onnx file"
+	)
+	parser.add_argument(
+		"--normalize-embeddings", default=False, action="store_true"
+	)
+	args = parser.parse_args()
+	model_name = args.model_name
+	onnx_file = args.onnx_file
+	normalize_embeddings = args.normalize_embeddings
 	
 	load_dotenv()
 	
@@ -17,11 +32,11 @@ def main():
 
 	embedding_model = TextEmbedding(
 		model_name=model_name,
-		onnx_file="model.onnx",
+		onnx_file=onnx_file,
 		pooling_config_path="1_Pooling",
 		normalize=False,
 		cache_folder=cache_dir,
-		device="cpu"
+		# device="cpu"
 	)
 	
 	print("embedding_model:", embedding_model)
@@ -46,6 +61,7 @@ def main():
 	start_embed = timer()
 	embeddings = embedding_model.encode(
 		sentences, output_value="sentence_embedding",
+		normalize_embeddings=normalize_embeddings,
 		return_as_array=False,
 		return_as_list=True
 	)
