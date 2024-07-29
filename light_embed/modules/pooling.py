@@ -49,7 +49,7 @@ class Pooling:
 
 	def __init__(
 			self,
-			word_embedding_dimension: int,
+			word_embedding_dimension: int = None,
 			pooling_mode: str = None,
 			pooling_mode_cls_token: bool = False,
 			pooling_mode_max_tokens: bool = False,
@@ -105,7 +105,11 @@ class Pooling:
 				pooling_mode_lasttoken,
 			]
 		)
-		self.pooling_output_dimension = pooling_mode_multiplier * word_embedding_dimension
+		
+		if isinstance(word_embedding_dimension, int):
+			self.pooling_output_dimension = pooling_mode_multiplier * word_embedding_dimension
+		else:
+			self.pooling_output_dimension = None
 
 	def __repr__(self):
 		return "Pooling({})".format(self.get_config_dict())

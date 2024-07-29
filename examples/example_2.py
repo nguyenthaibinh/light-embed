@@ -9,33 +9,19 @@ from timeit import default_timer as timer
 def main():
 	print(f"light_embed.__version__: {light_embed.__version__}")
 	
-	model_name = "BAAI/bge-base-en"
+	model_name = "jinaai/jina-embeddings-v2-base-en"
 	
 	load_dotenv()
 	
 	cache_dir = os.getenv("SENTENCE_TRANSFORMERS_HOME")
-	
-	modules_config = [
-		{
-			"type": "onnx_model",
-			"path": "onnx/model.onnx"
-		},
-		{
-			"type": "pooling",
-			"path": "1_Pooling"
-		},
-		{
-			"type": "normalize",
-			"path": "2_Normalize"
-		}
-	]
 
 	embedding_model = TextEmbedding(
-		model_name_or_path=model_name,
+		model_name=model_name,
+		onnx_file="model.onnx",
+		pooling_config_path="1_Pooling",
+		normalize=False,
 		cache_folder=cache_dir,
-		quantize=False,
-		device="cpu",
-		modules_config=modules_config
+		device="cpu"
 	)
 	
 	print("embedding_model:", embedding_model)

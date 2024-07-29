@@ -14,7 +14,7 @@ class TextEmbedding:
 	"""
 	TextEmbedding class for generating embeddings from text using Hugging Face models.
 
-	:param model_name_or_path: The name or path of the pre-trained Hugging Face model.
+	:param model_name: The name of the pre-trained Hugging Face model.
 	:param cache_folder: Optional. Folder to cache the downloaded model files. Defaults to None.
 	:param quantize: Optional. Whether to quantize the ONNX model for performance. Defaults to False.
 	:param device: Optional. Device to run inference on, e.g., 'cpu' or 'cuda'. Defaults to 'cpu'.
@@ -30,37 +30,50 @@ class TextEmbedding:
 		 	Encodes input sentences into embeddings.
 
 	Example:
-	 	embedding = TextEmbedding(model_name_or_path='bert-base-uncased')
+	 	embedding = TextEmbedding(model_name='bert-base-uncased')
 	 	embeddings = embedding.encode(sentences=['Hello world!', 'How are you?'])
 	"""
 	
 	def __init__(
 			self,
-			model_name_or_path: str,
+			model_name: str,
 			cache_folder: Optional[str or Path] = None,
-			quantize: bool = False,
+			quantize: Union[bool, str] = None,
 			device: str = "cpu",
 			**kwargs
 	) -> None:
-		self.model_name_or_path = model_name_or_path
+		self.model_name = model_name
 		self.session = None
 		self.device = device
 		
-		model_config = get_managed_model_config(
-			base_model_name=model_name_or_path,
+		managed_model_config = get_managed_model_config(
+			base_model_name=model_name,
 			quantize=quantize,
 			managed_models=managed_text_models
 		)
-		
-		if model_config is None:
-			modules_config = kwargs.get("modules_config", None)
-			if modules_config is None:
-				raise ValueError(f"model {model_name_or_path} with quantize={quantize} is not supported.")
-			
+		if managed_model_config is not None:
+			model_config = managed_model_config
+		else:
+			onnx_file = kwargs.get("onnx_file")
+			if onnx_file is None:
+				raise ValueError(f"model {model_name} with quantize={quantize} is not supported.")
+				
 			model_config = {
-				"model_name": model_name_or_path,
-				"modules": modules_config
+				"model_name": model_name,
+				"onnx_file": onnx_file
 			}
+			
+			pooling_config_path = kwargs.get("pooling_config_path")
+			if isinstance(pooling_config_path, str):
+				model_config["pooling_config_path"] = pooling_config_path
+			else:
+				pooling_mode = kwargs.get("pooling_mode")
+				if isinstance(pooling_mode, str):
+					model_config["pooling_mode"] = pooling_mode
+					
+			normalize_bool = kwargs.get("normalize", False)
+			if isinstance(normalize_bool, bool):
+				model_config["normalize"] = normalize_bool
 		
 		self.model_config = model_config
 
@@ -93,25 +106,60 @@ class TextEmbedding:
 			model_description = None
 		return model_description
 	
-	def _load_model(self):
-		default_modules = [
-			{
-				"name": "onnx_model",
-				"path": "model.onnx"
+	def _create_modules_config(self):
+		modules_config = []
+		onnx_config = {
+			"type": "onnx_model",
+			"path": self.model_config.get("onnx_file"),
+			"output_name_map": self.model_config.get("onnx_output_map")
+		}
+		modules_config.append(onnx_config)
+		
+		pooling_config_path = self.model_config.get("pooling_config_path")
+		pooling_mode = self.model_config.get("pooling_mode")
+		if isinstance(pooling_config_path, str):
+			pooling_config = {
+				"type": "pooling",
+				"pooling_config_path": pooling_config_path
 			}
-		]
-		modules_config = self.model_config.get("modules", default_modules)
+		elif isinstance(pooling_mode, str):
+			pooling_config = {
+				"type": "pooling",
+				"pooling_mode": pooling_mode
+			}
+		else:
+			pooling_config = None
+		
+		if pooling_config is not None:
+			modules_config.append(pooling_config)
+			
+		normalize_bool = self.model_config.get("normalize", True)
+		if normalize_bool:
+			modules_config.append({"type": "normalize"})
+			
+		return modules_config
+	
+	def _load_model(self):
+		modules_config = self._create_modules_config()
+		
 		modules = []
 		for module_config in modules_config:
 			module_type = module_config.get("type").lower()
-			module_path = Path(self.model_dir, module_config.get("path"))
 			if module_type == "onnx_model":
+				module_path = Path(self.model_dir, module_config.get("path"))
 				output_name_map = module_config.get("output_name_map")
 				module = OrtText.load(
 					input_path=module_path, output_name_map=output_name_map,
 					device=self.device)
 			elif module_type == "pooling":
-				module = Pooling.load(input_path=module_path)
+				pooling_config_path = self.model_config.get("pooling_config_path")
+				pooling_mode = self.model_config.get("pooling_mode")
+				
+				if isinstance(pooling_config_path, str):
+					module_path = Path(self.model_dir, pooling_config_path)
+					module = Pooling.load(input_path=module_path)
+				elif isinstance(pooling_mode, str):
+					module = Pooling(pooling_mode=pooling_mode)
 			elif module_type == "normalize":
 				module = Normalize()
 			else:

@@ -12,191 +12,102 @@ managed_models = [
 	{
 		"model_name": f"{REPO_ORG_NAME}/all-mpnet-base-v2-onnx",
 		"base_model": "sentence-transformers/all-mpnet-base-v2",
-		"quantized": "false",
-		"modules": [
-			{
-				"type": "onnx_model",
-				"path": "model.onnx"
-			}
-		]
+		"onnx_file": "model.onnx",
 	},
 	{
 		"model_name": f"{REPO_ORG_NAME}/all-mpnet-base-v1-onnx",
 		"base_model": "sentence-transformers/all-mpnet-base-v1",
-		"quantized": "false",
-		"modules": [
-			{
-				"type": "onnx_model",
-				"path": "model.onnx"
-			}
-		]
+		"onnx_file": "model.onnx",
 	},
 	{
 		"model_name": f"{REPO_ORG_NAME}/LaBSE-onnx",
 		"base_model": "sentence-transformers/LaBSE",
-		"quantized": "false",
-		"modules": [
-			{
-				"type": "onnx_model",
-				"path": "model.onnx"
-			},
-			{
-				"type": "pooling",
-				"path": "1_Pooling"
-			},
-			{
-				"type": "normalize",
-				"path": "2_Normalize"
-			}
-		]
+		"onnx_file": "model.onnx",
 	},
 	{
 		"model_name": f"{REPO_ORG_NAME}/sentence-t5-base-onnx",
 		"base_model": "sentence-transformers/sentence-t5-base",
-		"quantized": "false",
-		"modules": [
-			{
-				"type": "onnx_model",
-				"path": "model.onnx"
-			}
-		]
+		"onnx_file": "model.onnx"
 	},
 	{
-		"model_name": "sentence-transformers/all-MiniLM-L6-v2",
-		"quantized": "false",
-		"modules": [
-			{
-				"type": "onnx_model",
-				"path": "onnx/model.onnx"
-			}
-		]
+		"model_name": f"{REPO_ORG_NAME}/all-MiniLM-L6-v2-onnx",
+		"base_model": "sentence-transformers/all-MiniLM-L6-v2",
+		"onnx_file": "model.onnx"
 	},
 	{
 		"model_name": f"{REPO_ORG_NAME}/all-MiniLM-L12-v2-onnx",
 		"base_model": "sentence-transformers/all-MiniLM-L12-v2",
-		"quantized": "false",
-		"modules": [
-			{
-				"type": "onnx_model",
-				"path": "model.onnx"
-			}
-		]
+		"onnx_file": "model.onnx"
 	},
+	# BAAI models
 	{
 		"model_name": "BAAI/bge-large-en-v1.5",
-		"quantized": "false",
-		"modules": [
-			{
-				"type": "onnx_model",
-				"path": "onnx/model.onnx"
-			},
-			{
-				"type": "pooling",
-				"path": "1_Pooling"
-			},
-			{
-				"type": "normalize",
-				"path": "2_Normalize"
-			}
-		]
+		"onnx_file": "onnx/model.onnx",
+		"pooling_config_path": "1_Pooling",
+		"normalize": True
 	},
 	{
 		"model_name": "snowflake/snowflake-arctic-embed-xs",
-		"quantized": "false",
-		"modules": [
-			{
-				"type": "onnx_model",
-				"path": "onnx/model.onnx"
-			},
-			{
-				"type": "pooling",
-				"path": "1_Pooling"
-			},
-			{
-				"type": "normalize",
-				"path": "2_Normalize"
-			}
-		]
+		"onnx_file": "onnx/model.onnx",
+		"pooling_config_path": "1_Pooling",
+		"normalize": True
 	},
 	{
 		"model_name": f"{REPO_ORG_NAME}/sentence-bert-swedish-cased-onnx",
 		"base_model": "KBLab/sentence-bert-swedish-cased",
-		"quantized": "false",
-		"modules": [
-			{
-				"type": "onnx_model",
-				"path": "model.onnx"
-			}
-		]
+		"onnx_file": "model.onnx"
 	},
 	{
 		"model_name": "BAAI/bge-base-en",
-		"quantized": "false",
-		"modules": [
-			{
-				"type": "onnx_model",
-				"path": "onnx/model.onnx"
-			},
-			{
-				"type": "pooling",
-				"path": "1_Pooling"
-			},
-			{
-				"type": "normalize",
-				"path": "2_Normalize"
-			}
-		]
+		"onnx_file": "onnx/model.onnx",
+		"pooling_config_path": "1_Pooling",
+		"normalize": True
 	},
 	{
 		"model_name": "BAAI/bge-base-en-v1.5",
-		"quantized": "false",
-		"modules": [
-			{
-				"type": "onnx_model",
-				"path": "onnx/model.onnx"
-			},
-			{
-				"type": "pooling",
-				"path": "1_Pooling"
-			},
-			{
-				"type": "normalize",
-				"path": "2_Normalize"
-			}
-		]
+		"onnx_file": "onnx/model.onnx",
+		"pooling_config_path": "1_Pooling",
+		"normalize": True
 	},
 	{
 		"model_name": "BAAI/bge-small-en-v1.5",
-		"quantized": "false",
-		"modules": [
-			{
-				"type": "onnx_model",
-				"path": "onnx/model.onnx"
-			},
-			{
-				"type": "pooling",
-				"path": "1_Pooling"
-			},
-			{
-				"type": "normalize",
-				"path": "2_Normalize"
-			}
-		]
+		"onnx_file": "onnx/model.onnx",
+		"pooling_config_path": "1_Pooling",
+		"normalize": True
 	},
+	# jinaai models
 	{
 		"model_name": "jinaai/jina-embeddings-v2-base-en",
-		"quantized": "false",
-		"modules": [
-			{
-				"type": "onnx_model",
-				"path": "model.onnx"
-			},
-			{
-				"type": "pooling",
-				"path": "1_Pooling"
-			}
-		]
+		"onnx_file": "model.onnx",
+		"pooling_config_path": "1_Pooling",
+		"normalize": False
+	},
+	{
+		"model_name": "jinaai/jina-embeddings-v2-small-en",
+		"onnx_file": "model.onnx",
+		"pooling_config_path": "1_Pooling",
+		"normalize": False
+	},
+	# nomic-ai models
+	{
+		"model_name": "nomic-ai/nomic-embed-text-v1.5",
+		"onnx_file": "onnx/model.onnx",
+		"quantized_model_files": {
+			"quantized": "onnx/model_quantized.onnx"
+		},
+		"pooling_config_path": "1_Pooling",
+		"normalize": True
+	},
+	{
+		"model_name": "nomic-ai/nomic-embed-text-v1",
+		"onnx_file": "onnx/model.onnx",
+		"quantized_model_files": {
+			"quantized": "onnx/model_quantized.onnx"
+		},
+		"pooling_config_path": "1_Pooling",
+		"normalize": True
 	}
+
 ]
 
 
@@ -206,7 +117,7 @@ class OrtText(OrtModel):
 	output_name_map = {
 		"last_hidden_state": "token_embeddings"
 	}
-
+	
 	def __init__(
 		self,
 		model_path: Union[str, Path],
@@ -231,6 +142,16 @@ class OrtText(OrtModel):
 			if mapped_name in self.OUTPUT_NAMES:
 				out_features[mapped_name] = ort_output[i]
 		
-		out_features["attention_mask"] = features["attention_mask"]
+		if len(out_features) == 0:
+			error_msg = (
+				f"Unable to map ONNX output {self.model_output_names} to either "
+				f"`token_embeddings` or `sentence_embedding`. Please define "
+				f"the mapping from onnx output names to `token_embeddings` "
+				f"or `sentence_embedding`"
+			)
+			raise ValueError(error_msg)
+		
+		if "sentence-embedding" not in out_features:
+			out_features["attention_mask"] = features["attention_mask"]
 		
 		return out_features
