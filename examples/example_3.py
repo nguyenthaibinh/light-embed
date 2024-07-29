@@ -39,14 +39,26 @@ def main():
 	
 	print("embedding_model:", embedding_model)
 	
-	documents: List[str] = [
-		"This is a light-weight and fast python library for generating embeddings.",
-		"This is built to be faster and lighter than other embedding libraries e.g. Transformers, Sentence-Transformers, etc.",
+	sentences = [
+		(
+			"Sentence embeddings are a technique in natural language processing where "
+			"sentences are converted into fixed-size vectors. These embeddings capture "
+			"the semantic meaning of sentences, allowing for effective comparison "
+			"and retrieval in various NLP tasks such as text similarity, classification, "
+			"and information retrieval."
+		),
+		(
+			"Embeddings represent sentences as dense vectors in a continuous space, "
+			"capturing their semantic properties. By encoding sentences into these "
+			"vector representations, we can perform tasks like measuring similarity, "
+			"clustering, and searching in a way that reflects the underlying "
+			"meaning and context of the text."
+		)
 	]
 	
 	start_embed = timer()
 	embeddings = embedding_model.encode(
-		documents, output_value="sentence_embedding",
+		sentences, output_value="sentence_embedding",
 		return_as_array=False,
 		return_as_list=True,
 		normalize_embeddings=normalize_embeddings
