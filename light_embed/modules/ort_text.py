@@ -57,6 +57,7 @@ managed_models = [
 		"base_model": "KBLab/sentence-bert-swedish-cased",
 		"onnx_file": "model.onnx"
 	},
+	# BAAI models
 	{
 		"model_name": "BAAI/bge-base-en",
 		"onnx_file": "onnx/model.onnx",
