@@ -19,11 +19,16 @@ def main():
 		help="Relative path to the onnx file"
 	)
 	parser.add_argument(
+		"--pooling-config-path", type=str,
+		help="Relative path to the pooling config folder"
+	)
+	parser.add_argument(
 		"--normalize-embeddings", default=False, action="store_true"
 	)
 	args = parser.parse_args()
 	model_name = args.model_name
 	onnx_file = args.onnx_file
+	pooling_config_path = args.pooling_config_path
 	normalize_embeddings = args.normalize_embeddings
 	
 	load_dotenv()
@@ -33,8 +38,8 @@ def main():
 	embedding_model = TextEmbedding(
 		model_name=model_name,
 		onnx_file=onnx_file,
-		pooling_config_path="1_Pooling",
-		normalize=False,
+		pooling_config_path=pooling_config_path,
+		normalize=normalize_embeddings,
 		cache_folder=cache_dir,
 		# device="cpu"
 	)
