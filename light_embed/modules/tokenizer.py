@@ -71,7 +71,7 @@ class Tokenizer:
 	@staticmethod
 	def load(
 		input_path: Union[str, Path],
-		max_length: int = 512, **kwargs) -> tokenizers.Tokenizer:
+		max_length: int = None, **kwargs) -> tokenizers.Tokenizer:
 		
 		"""
 		Load a tokenizer from the specified input path.
@@ -119,10 +119,14 @@ class Tokenizer:
 		tokenizer = tokenizers.Tokenizer.from_file(tokenizer_path)
 		
 		# Enable truncation and padding
-		model_max_length = config_data["tokenizer_config"]["model_max_length"]
-		tokenizer.enable_truncation(
-			max_length=min(model_max_length, max_length)
-		)
+		model_max_length = config_data["tokenizer_config"].get("model_max_length")
+		if isinstance(max_length, int) and model_max_length is not None:
+			model_max_length = min(model_max_length, max_length)
+		elif isinstance(max_length, int):
+			model_max_length = max_length
+		
+		if model_max_length is not None:
+			tokenizer.enable_truncation(max_length=model_max_length)
 
 		pad_token_id = config_data["config"].get("pad_token_id", 0)
 		pad_token = config_data["tokenizer_config"]["pad_token"]
