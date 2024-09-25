@@ -45,6 +45,7 @@ class TextEmbedding:
 		self.model_name = model_name
 		self.session = None
 		self.device = device
+		self._transformer_config = {}
 		
 		onnx_file = kwargs.get("onnx_file")
 		
@@ -96,6 +97,18 @@ class TextEmbedding:
 		self.tokenizer = Tokenizer.load(
 			input_path=self.model_dir, model_input_names=model_input_names)
 		
+		model_max_length = self.tokenizer.model_max_length
+		max_position_embeddings = self._transformer_config.get(
+			"max_position_embeddings")
+		if max_position_embeddings is not None and model_max_length is not None:
+			max_seq_length = min(
+				max_position_embeddings,
+				model_max_length
+			)
+		else:
+			max_seq_length = None
+		self.max_seq_length = max_seq_length
+		
 	def _load_model_description(self):
 		"""
 		Load the model description from a JSON file.
@@ -146,6 +159,11 @@ class TextEmbedding:
 		return modules_config
 	
 	def _load_model(self):
+		config_json_path = Path(self.model_dir, "config.json")
+		if config_json_path.exists():
+			with open(str(config_json_path)) as fIn:
+				self._transformer_config = json.load(fIn)
+
 		modules_config = self._create_modules_config()
 		
 		modules = []
