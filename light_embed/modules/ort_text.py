@@ -20,6 +20,11 @@ managed_models = [
 		"onnx_file": "model.onnx",
 	},
 	{
+		"model_name": f"{REPO_ORG_NAME}/paraphrase-mpnet-base-v2-onnx",
+		"base_model": "sentence-transformers/paraphrase-mpnet-base-v2",
+		"onnx_file": "model.onnx",
+	},
+	{
 		"model_name": f"{REPO_ORG_NAME}/LaBSE-onnx",
 		"base_model": "sentence-transformers/LaBSE",
 		"onnx_file": "model.onnx",
@@ -88,6 +93,11 @@ managed_models = [
 		"onnx_file": "model.onnx",
 		"pooling_config_path": "1_Pooling",
 		"normalize": False
+	},
+	{
+		"model_name": f"{REPO_ORG_NAME}/jina-colbert-v1-en-onnx",
+		"base_model": "jinaai/jina-colbert-v1-en",
+		"onnx_file": "model.onnx"
 	},
 	# nomic-ai models
 	{
