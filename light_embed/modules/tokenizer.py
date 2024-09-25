@@ -68,6 +68,10 @@ class Tokenizer:
 
 		return features
 	
+	@property
+	def model_max_length(self):
+		return self.tokenizer.truncation.get("max_length")
+	
 	@staticmethod
 	def load(
 		input_path: Union[str, Path],
