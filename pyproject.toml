@@ -9,11 +9,11 @@ include = ["light_embed*"] # <-- this changed
 
 [project]
 name = "light-embed"
-version = "0.1.8"
+version = "0.1.9"
 description = "Fast and Lightweight Text Embedding"
 readme = "README.md"
 authors = [{ name = "Binh Nguyen" }]
-requires-python = ">=3.9,<=3.12.3"
+requires-python = ">=3.9,<=3.13"
 dependencies = [
     "python-dotenv==1.0.1",
     "numpy==1.26.4",
