@@ -10,14 +10,14 @@ def main():
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument(
-		"--model-name", type=str,
+		"--model-name-or-path", type=str,
 		default="jinaai/jina-embeddings-v2-base-en"
 	)
 	parser.add_argument(
 		"--normalize-embeddings", default=False, action="store_true"
 	)
 	args = parser.parse_args()
-	model_name = args.model_name
+	model_name_or_path = args.model_name_or_path
 	normalize_embeddings = args.normalize_embeddings
 
 	load_dotenv()
@@ -25,7 +25,7 @@ def main():
 	cache_dir = os.getenv("SENTENCE_TRANSFORMERS_HOME")
 	
 	embedding_model = TextEmbedding(
-		model_name=model_name,
+		model_name_or_path=model_name_or_path,
 		cache_folder=cache_dir,
 		quantize=False,
 		device="cpu"
@@ -60,7 +60,7 @@ def main():
 	elapsed_time = timer() - start_embed
 	
 	print("embeddings:\n", embeddings)
-	print("model_name:", model_name)
+	print("model_name_or_path:", model_name_or_path)
 	print("embedding dimension:", len(embeddings[0]))
 	print(f"elapsed time: {elapsed_time:.2f}")
 	

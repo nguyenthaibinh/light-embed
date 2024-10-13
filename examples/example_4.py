@@ -15,6 +15,10 @@ def main():
 		default="nomic-ai/nomic-embed-text-v1.5"
 	)
 	parser.add_argument(
+		"--onnx-file", type=str,
+		default="model.onnx"
+	)
+	parser.add_argument(
 		"--quantize", type=str, default="false"
 	)
 	parser.add_argument(
@@ -22,6 +26,7 @@ def main():
 	)
 	args = parser.parse_args()
 	model_name_or_path = args.model_name_or_path
+	onnx_file = args.onnx_file
 	quantize = args.quantize
 	normalize_embeddings = args.normalize_embeddings
 	
@@ -31,6 +36,7 @@ def main():
 	
 	embedding_model = TextEmbedding(
 		model_name_or_path=model_name_or_path,
+		onnx_file=onnx_file,
 		cache_folder=cache_dir,
 		quantize=quantize,
 		device="cpu"

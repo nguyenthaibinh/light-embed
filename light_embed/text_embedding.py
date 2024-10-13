@@ -36,58 +36,67 @@ class TextEmbedding:
 	
 	def __init__(
 			self,
-			model_name: str,
+			model_name_or_path: str,
 			cache_folder: Optional[str or Path] = None,
 			quantize: Union[bool, str] = None,
 			device: Optional[str] = None,
 			**kwargs
 	) -> None:
-		self.model_name = model_name
+		self.model_name_or_path = model_name_or_path
 		self.session = None
 		self.device = device
 		self._transformer_config = {}
-		
-		onnx_file = kwargs.get("onnx_file")
-		
-		# if model_file is provided then use model config
-		# given from command line
-		# otherwise, use light-embed managed model config
-		if onnx_file is not None:
+
+		# if the given model_name_or_path is a folder on the local
+		# then set use it as model_dir
+		if Path(model_name_or_path).is_dir():
+			model_dir = model_name_or_path
+			onnx_file = kwargs.get("onnx_file", "model.onnx")
 			model_config = {
-				"model_name": model_name,
 				"onnx_file": onnx_file
 			}
 			
-			pooling_config_path = kwargs.get("pooling_config_path")
-			if isinstance(pooling_config_path, str):
-				model_config["pooling_config_path"] = pooling_config_path
-			else:
-				pooling_mode = kwargs.get("pooling_mode")
-				if isinstance(pooling_mode, str):
-					model_config["pooling_mode"] = pooling_mode
-			
-			normalize_bool = kwargs.get("normalize", False)
-			if isinstance(normalize_bool, bool):
-				model_config["normalize"] = normalize_bool
-		
 		else:
 			model_config = get_managed_model_config(
-				base_model_name=model_name,
+				base_model_name=model_name_or_path,
 				quantize=quantize,
 				managed_models=managed_text_models
 			)
-			
+
+			# if the model is not supported by the light-embed
+			# then use onnx from the original huggingface repository
 			if model_config is None:
-				raise ValueError(
-					f"model {model_name} with quantize={quantize} is not supported."
-				)
-
+				input_onnx_file = kwargs.get("onnx_file", None)
+				if input_onnx_file is None:
+					raise ValueError(
+						f"onnx file name is not provided for model "
+						f"{model_name_or_path}."
+					)
+				else:
+					model_config = {
+						"model_name": model_name_or_path,
+						"onnx_file": input_onnx_file
+					}
+					
+					pooling_config_path = kwargs.get("pooling_config_path")
+					if isinstance(pooling_config_path, str):
+						model_config["pooling_config_path"] = pooling_config_path
+					else:
+						pooling_mode = kwargs.get("pooling_mode")
+						if isinstance(pooling_mode, str):
+							model_config["pooling_mode"] = pooling_mode
+					
+					normalize_bool = kwargs.get("normalize", False)
+					if isinstance(normalize_bool, bool):
+						model_config["normalize"] = normalize_bool
+		
+			model_dir = download_onnx_model(
+				model_config=model_config,
+				cache_dir=cache_folder
+			)
+			
 		self.model_config = model_config
-
-		self.model_dir = download_onnx_model(
-			model_config=model_config,
-			cache_dir=cache_folder
-		)
+		self.model_dir = model_dir
 		
 		# Load sentence-transformers' onnx model
 		self.modules = self._load_model()
