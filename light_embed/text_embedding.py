@@ -51,30 +51,27 @@ class TextEmbedding:
 		# then set use it as model_dir
 		if Path(model_name_or_path).is_dir():
 			model_dir = model_name_or_path
-			default_model_config = {
-				"onnx_file": "model.onnx"
-			}
-			model_config = kwargs.get("model_config", default_model_config)
-			
-		else:
-			model_config = get_managed_model_config(
-				base_model_name=model_name_or_path,
-				quantize=quantize,
-				managed_models=managed_text_models
-			)
-
-			# if the model is not supported by the light-embed
-			# then use onnx from the original huggingface repository
+			model_config = kwargs.get("model_config")
 			if model_config is None:
-				model_config = kwargs.get("model_config", None)
+				raise ValueError(f"model_config is required for local model")
+		else:
+			model_config = kwargs.get("model_config")
+			
+			# if model_config is provided as input, then use it
+			# otherwise, load model_config from managed models
+			if model_config is not None:
+				model_config["model_name"] = model_name_or_path
+			else:
+				model_config = get_managed_model_config(
+					base_model_name=model_name_or_path,
+					quantize=quantize,
+					managed_models=managed_text_models
+				)
 				if model_config is None:
 					raise ValueError(
-						f"model_config is required for model "
-						f"{model_name_or_path}"
+						f"{model_name_or_path} is not managed by light-embed"
 					)
 
-				model_config["model_name"] = model_name_or_path
-		
 			model_dir = download_onnx_model(
 				model_config=model_config,
 				cache_dir=cache_folder
