@@ -19,6 +19,16 @@ def main():
 		default="model.onnx"
 	)
 	parser.add_argument(
+		"--pooling-config-path", type=str
+	)
+	parser.add_argument(
+		"--pooling-mode", type=str
+	)
+	parser.add_argument(
+		"--normalize", action="store_true", default=False,
+		help="Specify if there is normalization module or not"
+	)
+	parser.add_argument(
 		"--quantize", type=str, default="false"
 	)
 	parser.add_argument(
@@ -27,6 +37,9 @@ def main():
 	args = parser.parse_args()
 	model_name_or_path = args.model_name_or_path
 	onnx_file = args.onnx_file
+	pooling_config_path = args.pooling_config_path
+	pooling_mode = args.pooling_mode
+	normalize = args.normalize
 	quantize = args.quantize
 	normalize_embeddings = args.normalize_embeddings
 	
@@ -34,12 +47,19 @@ def main():
 	
 	cache_dir = os.getenv("SENTENCE_TRANSFORMERS_HOME")
 	
+	model_config = {
+		"onnx_file": onnx_file,
+		"pooling_config_path": pooling_config_path,
+		"pooling_mode": pooling_mode,
+		"normalize": normalize
+	}
+	
 	embedding_model = TextEmbedding(
 		model_name_or_path=model_name_or_path,
-		onnx_file=onnx_file,
 		cache_folder=cache_dir,
 		quantize=quantize,
-		device="cpu"
+		device="cpu",
+		model_config=model_config
 	)
 	
 	print("embedding_model:", embedding_model)

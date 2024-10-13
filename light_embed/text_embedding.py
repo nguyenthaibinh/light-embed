@@ -51,10 +51,10 @@ class TextEmbedding:
 		# then set use it as model_dir
 		if Path(model_name_or_path).is_dir():
 			model_dir = model_name_or_path
-			onnx_file = kwargs.get("onnx_file", "model.onnx")
-			model_config = {
-				"onnx_file": onnx_file
+			default_model_config = {
+				"onnx_file": "model.onnx"
 			}
+			model_config = kwargs.get("model_config", default_model_config)
 			
 		else:
 			model_config = get_managed_model_config(
@@ -66,35 +66,20 @@ class TextEmbedding:
 			# if the model is not supported by the light-embed
 			# then use onnx from the original huggingface repository
 			if model_config is None:
-				input_onnx_file = kwargs.get("onnx_file", None)
-				if input_onnx_file is None:
+				model_config = kwargs.get("model_config", None)
+				if model_config is None:
 					raise ValueError(
-						f"onnx file name is not provided for model "
-						f"{model_name_or_path}."
+						f"model_config is required for model "
+						f"{model_name_or_path}"
 					)
-				else:
-					model_config = {
-						"model_name": model_name_or_path,
-						"onnx_file": input_onnx_file
-					}
-					
-					pooling_config_path = kwargs.get("pooling_config_path")
-					if isinstance(pooling_config_path, str):
-						model_config["pooling_config_path"] = pooling_config_path
-					else:
-						pooling_mode = kwargs.get("pooling_mode")
-						if isinstance(pooling_mode, str):
-							model_config["pooling_mode"] = pooling_mode
-					
-					normalize_bool = kwargs.get("normalize", False)
-					if isinstance(normalize_bool, bool):
-						model_config["normalize"] = normalize_bool
+
+				model_config["model_name"] = model_name_or_path
 		
 			model_dir = download_onnx_model(
 				model_config=model_config,
 				cache_dir=cache_folder
 			)
-			
+
 		self.model_config = model_config
 		self.model_dir = model_dir
 		
