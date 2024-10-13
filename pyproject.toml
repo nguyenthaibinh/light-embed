@@ -9,7 +9,7 @@ include = ["light_embed*"] # <-- this changed
 
 [project]
 name = "light-embed"
-version = "1.0.0"
+version = "1.0.1"
 description = "Fast and Lightweight Text Embedding"
 readme = "README.md"
 authors = [{ name = "Binh Nguyen" }]

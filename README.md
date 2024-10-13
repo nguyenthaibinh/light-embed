@@ -57,7 +57,7 @@ from light_embed import TextEmbedding
 sentences = ["This is an example sentence", "Each sentence is converted"]
 
 model_config = {
-    "model_file": "model.onnx",
+    "model_file": "onnx/model.onnx",
     "pooling_config_path": "1_Pooling",
     "normalize": False
 }
@@ -75,7 +75,7 @@ from light_embed import TextEmbedding
 sentences = ["This is an example sentence", "Each sentence is converted"]
 
 model_config = {
-    "model_file": "model.onnx",
+    "model_file": "onnx/model.onnx",
     "pooling_config_path": "1_Pooling",
     "normalize": False
 }
