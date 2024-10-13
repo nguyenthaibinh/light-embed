@@ -86,6 +86,17 @@ model = TextEmbedding(
 embeddings = model.encode(sentences)
 print(embeddings)
 ```
+The `model_config` is a dictionary that provides details about the model, such as the location of the ONNX file and whether
+pooling or normalization is needed. Pooling is required if it hasn't been incorporated into the ONNX file itself.
+```python
+model_config = {
+    "model_file": "relative path to the onnx file, e.g., model.onnx, or onnx/model.onnx",
+    "pooling_config_path": "relative path to the pooling config folder, e.g., 1_Pooling",
+    "normalize": True/False
+}
+```
+If the pooling has been incorporated into the ONNX file, you can ignore the "pooling_config_path".
+Similarly, if normalization is already included in the ONNX file, you can omit the "normalize" entry.
 
 ## Citing & Authors
 
