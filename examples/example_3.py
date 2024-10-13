@@ -1,38 +1,19 @@
 import os
 import light_embed
 from light_embed import TextEmbedding
-from dotenv import load_dotenv
 from timeit import default_timer as timer
-import argparse
 
 
 def main():
 	print(f"light_embed.__version__: {light_embed.__version__}")
 	
-	parser = argparse.ArgumentParser()
-	parser.add_argument(
-		"--model-name-or-path", type=str,
-		default="nomic-ai/nomic-embed-text-v1.5"
-	)
-	parser.add_argument(
-		"--quantize", type=str, default="false"
-	)
-	parser.add_argument(
-		"--normalize-embeddings", default=False, action="store_true"
-	)
-	args = parser.parse_args()
-	model_name_or_path = args.model_name_or_path
-	quantize = args.quantize
-	normalize_embeddings = args.normalize_embeddings
-	
-	load_dotenv()
-	
 	cache_dir = os.getenv("SENTENCE_TRANSFORMERS_HOME")
 	
+	model_name_or_path = "nomic-ai/nomic-embed-text-v1.5"
 	embedding_model = TextEmbedding(
 		model_name_or_path=model_name_or_path,
 		cache_folder=cache_dir,
-		quantize=quantize,
+		quantize=False,
 		device="cpu"
 	)
 	
@@ -59,8 +40,7 @@ def main():
 	embeddings = embedding_model.encode(
 		sentences, output_value="sentence_embedding",
 		return_as_array=False,
-		return_as_list=True,
-		normalize_embeddings=normalize_embeddings
+		return_as_list=True
 	)
 	elapsed_time = timer() - start_embed
 	

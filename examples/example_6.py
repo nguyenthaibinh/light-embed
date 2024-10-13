@@ -9,7 +9,7 @@ def main():
 	
 	cache_dir = os.getenv("SENTENCE_TRANSFORMERS_HOME")
 	
-	model_name_or_path = "/path/to/local/model"
+	model_name_or_path = "sentence-transformers/all-MiniLM-L6-v2"
 	onnx_file = "onnx/model.onnx"
 	pooling_config_path = "1_Pooling"
 	pooling_mode = "mean"

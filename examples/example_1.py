@@ -1,29 +1,14 @@
 import os
 import light_embed
 from light_embed import TextEmbedding
-from dotenv import load_dotenv
 from timeit import default_timer as timer
-import argparse
 
 def main():
 	print(f"light_embed.__version__: {light_embed.__version__}")
 
-	parser = argparse.ArgumentParser()
-	parser.add_argument(
-		"--model-name-or-path", type=str,
-		default="jinaai/jina-embeddings-v2-base-en"
-	)
-	parser.add_argument(
-		"--normalize-embeddings", default=False, action="store_true"
-	)
-	args = parser.parse_args()
-	model_name_or_path = args.model_name_or_path
-	normalize_embeddings = args.normalize_embeddings
-
-	load_dotenv()
-
 	cache_dir = os.getenv("SENTENCE_TRANSFORMERS_HOME")
 	
+	model_name_or_path = "sentence-transformers/all-MiniLM-L6-v2"
 	embedding_model = TextEmbedding(
 		model_name_or_path=model_name_or_path,
 		cache_folder=cache_dir,
@@ -54,8 +39,7 @@ def main():
 	embeddings = embedding_model.encode(
 		sentences, output_value="sentence_embedding",
 		return_as_array=False,
-		return_as_list=True,
-		normalize_embeddings=normalize_embeddings
+		return_as_list=True
 	)
 	elapsed_time = timer() - start_embed
 	

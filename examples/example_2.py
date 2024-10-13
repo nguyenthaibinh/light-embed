@@ -1,47 +1,31 @@
 import os
 import light_embed
 from light_embed import TextEmbedding
-from dotenv import load_dotenv
 from timeit import default_timer as timer
-import argparse
-
 
 def main():
 	print(f"light_embed.__version__: {light_embed.__version__}")
 	
-	parser = argparse.ArgumentParser()
-	parser.add_argument(
-		"--model-name-or-path", type=str,
-		default="jinaai/jina-embeddings-v2-base-en"
-	)
-	parser.add_argument(
-		"--onnx-file", type=str, default="model.onnx",
-		help="Relative path to the onnx file"
-	)
-	parser.add_argument(
-		"--pooling-config-path", type=str,
-		help="Relative path to the pooling config folder"
-	)
-	parser.add_argument(
-		"--normalize-embeddings", default=False, action="store_true"
-	)
-	args = parser.parse_args()
-	model_name_or_path = args.model_name_or_path
-	onnx_file = args.onnx_file
-	pooling_config_path = args.pooling_config_path
-	normalize_embeddings = args.normalize_embeddings
-	
-	load_dotenv()
-	
 	cache_dir = os.getenv("SENTENCE_TRANSFORMERS_HOME")
-
+	
+	model_name_or_path = "sentence-transformers/all-MiniLM-L6-v2"
+	onnx_file = "onnx/model.onnx"
+	pooling_config_path = "1_Pooling"
+	pooling_mode = "mean"
+	normalize = True
+	
+	model_config = {
+		"onnx_file": onnx_file,
+		"pooling_config_path": pooling_config_path,
+		"pooling_mode": pooling_mode,
+		"normalize": normalize
+	}
+	
 	embedding_model = TextEmbedding(
 		model_name_or_path=model_name_or_path,
-		onnx_file=onnx_file,
-		pooling_config_path=pooling_config_path,
-		normalize=normalize_embeddings,
 		cache_folder=cache_dir,
-		# device="cpu"
+		model_config=model_config,
+		device="cpu"
 	)
 	
 	print("embedding_model:", embedding_model)
@@ -66,7 +50,6 @@ def main():
 	start_embed = timer()
 	embeddings = embedding_model.encode(
 		sentences, output_value="sentence_embedding",
-		normalize_embeddings=normalize_embeddings,
 		return_as_array=False,
 		return_as_list=True
 	)
