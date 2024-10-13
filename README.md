@@ -51,8 +51,7 @@ embeddings = model.encode(sentences)
 print(embeddings)
 ```
 
-If the model is not on [Hugging Face ONNX models](https://huggingface.co/onnx-models),
-you can specify model name and the model_config:
+**Using a Non-Managed Model**: To use a model from its original repository without relying on [Hugging Face ONNX models](https://huggingface.co/onnx-models), simply specify the model name and provide the `model_config`, assuming the original repository includes ONNX files.
 ```python
 from light_embed import TextEmbedding
 sentences = ["This is an example sentence", "Each sentence is converted"]
@@ -63,14 +62,14 @@ model_config = {
     "normalize": False
 }
 model = TextEmbedding(
-    model_name_or_path='onnx-models/all-MiniLM-L6-v2-onnx',
+    model_name_or_path='sentence-transformers/all-MiniLM-L6-v2',
     model_config=model_config
 )
 embeddings = model.encode(sentences)
 print(embeddings)
 ```
 
-**Use local model**: to use the local model, you need to specify the path to the folder and the model_config:
+**Using a Local Model**: To use a local model, specify the path to the model's folder and provide the `model_config`.
 ```python
 from light_embed import TextEmbedding
 sentences = ["This is an example sentence", "Each sentence is converted"]
