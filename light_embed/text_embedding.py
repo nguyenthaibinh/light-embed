@@ -76,6 +76,9 @@ class TextEmbedding:
 				model_config=model_config,
 				cache_dir=cache_folder
 			)
+		
+		if "onnx_file" not in model_config:
+			raise ValueError("onnx_file must be present in model_config")
 
 		self.model_config = model_config
 		self.model_dir = model_dir
