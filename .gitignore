@@ -2,6 +2,8 @@
 *.bk
 .idea/*
 /test/*
+/push_pypi.sh
+/push_testpypi.sh
 
 !.env.local
 
