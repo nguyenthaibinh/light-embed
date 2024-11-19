@@ -121,3 +121,6 @@ jobs:
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         repository-url: https://test.pypi.org/legacy/
+        token: ${{ secrets.PYPI_TOKEN }}
+      env:
+        TWINE_VERBOSE: true  # Enable verbose logging
