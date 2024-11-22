@@ -9,10 +9,11 @@ include = ["light_embed*"] # <-- this changed
 
 [project]
 name = "light-embed"
-version = "1.0.4"
+version = "1.0.5"
 description = "Fast and Lightweight Text Embedding"
 readme = "README.md"
-authors = [{ name = "Binh Nguyen" }]
+authors = [{ name = "Binh Nguyen", email = "binhcode25@gmail.com" }]
+maintainers = [{name = "Binh Nguyen", email = "binhcode25@gmail.com"}]
 requires-python = ">=3.9,<=3.13"
 license = { text = "MIT" }
 dependencies = [
@@ -22,12 +23,6 @@ dependencies = [
     "tokenizers==0.20.1"
 ]
 
-[project.optional-dependencies]
-dev = [
-    "pytest==8.2.1",
-    "pytest-cov==5.0.0",
-    "tox==4.15.1",
-    "black==24.4.2",
-    "pip-tools==7.4.1",
-    "flake8==7.1.0"
-]
+[project.urls]
+Homepage = "https://github.com/nguyenthaibinh/light-embed"
+Repository = "https://github.com/nguyenthaibinh/light-embed"
