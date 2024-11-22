@@ -9,7 +9,7 @@ include = ["light_embed*"] # <-- this changed
 
 [project]
 name = "light-embed"
-version = "1.0.5-dev"
+version = "1.0.6-dev"
 description = "Fast and Lightweight Text Embedding"
 readme = "README.md"
 authors = [{ name = "Binh Nguyen" }]
@@ -21,6 +21,10 @@ dependencies = [
     "onnxruntime==1.19.2",
     "tokenizers==0.20.1"
 ]
+
+[project.urls]
+homepage = "https://github.com/nguyenthaibinh/light-embed"
+repository = "https://github.com/nguyenthaibinh/light-embed"
 
 [project.optional-dependencies]
 dev = [
