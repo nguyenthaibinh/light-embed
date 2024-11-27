@@ -57,7 +57,7 @@ from light_embed import TextEmbedding
 sentences = ["This is an example sentence", "Each sentence is converted"]
 
 model_config = {
-    "model_file": "onnx/model.onnx",
+    "onnx_file": "onnx/model.onnx",
     "pooling_config_path": "1_Pooling",
     "normalize": False
 }
@@ -75,7 +75,7 @@ from light_embed import TextEmbedding
 sentences = ["This is an example sentence", "Each sentence is converted"]
 
 model_config = {
-    "model_file": "onnx/model.onnx",
+    "onnx_file": "onnx/model.onnx",
     "pooling_config_path": "1_Pooling",
     "normalize": False
 }
@@ -90,7 +90,7 @@ The `model_config` is a dictionary that provides details about the model, such a
 pooling or normalization is needed. Pooling is required if it hasn't been incorporated into the ONNX file itself.
 ```python
 model_config = {
-    "model_file": "relative path to the onnx file, e.g., model.onnx, or onnx/model.onnx",
+    "onnx_file": "relative path to the onnx file, e.g., model.onnx, or onnx/model.onnx",
     "pooling_config_path": "relative path to the pooling config folder, e.g., 1_Pooling",
     "normalize": True/False
 }
