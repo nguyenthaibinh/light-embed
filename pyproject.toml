@@ -14,13 +14,13 @@ description = "Fast and Lightweight Text Embedding"
 readme = "README.md"
 authors = [{ name = "Binh Nguyen", email = "binhcode25@gmail.com" }]
 maintainers = [{name = "Binh Nguyen", email = "binhcode25@gmail.com"}]
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 license = { text = "MIT" }
 dependencies = [
-    "numpy==1.26.4",
-    "huggingface_hub==0.25.2",
-    "onnxruntime==1.19.2",
-    "tokenizers==0.20.1"
+    "numpy>=2",
+    "huggingface_hub>=0.25.2",
+    "onnxruntime==1.22.0",
+    "tokenizers==0.21.1"
 ]
 
 [project.urls]

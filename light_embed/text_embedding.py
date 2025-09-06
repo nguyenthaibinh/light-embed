@@ -214,7 +214,8 @@ class TextEmbedding:
 		precision: Literal["float32", "int8", "uint8", "binary", "ubinary"] = "float32",
 		return_as_array: bool = True,
 		return_as_list: bool = False,
-		normalize_embeddings: bool = False
+		normalize_embeddings: bool = False,
+        extra_kwargs: dict = None,
 	) -> np.ndarray:
 		"""
 		Encodes input sentences into embeddings.
@@ -243,6 +244,9 @@ class TextEmbedding:
 		for start_index in range(0, len(sentences), batch_size):
 			sentences_batch = sentences_sorted[start_index: start_index + batch_size]
 			features = self.tokenize(sentences_batch)
+			if extra_kwargs:
+				for k, v in extra_kwargs.items():
+					features[k] = v
 
 			onnx_result = self.apply(features)
 			

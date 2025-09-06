@@ -29,6 +29,7 @@ def get_managed_model_config(
 			
 			model_config["model_name"] = model_name
 			model_config["onnx_file"] = onnx_file
+			model_config["onnx_extra_files"] = model_info.get("onnx_extra_files", None)
 
 			pooling_config_path = model_info.get("pooling_config_path")
 			pooling_mode = model_info.get("pooling_mode")
@@ -48,6 +49,7 @@ def download_huggingface_model(
 
 	repo_id = model_config.get("model_name")
 
+
 	allow_patterns = [
 		model_config.get("onnx_file"),
 		"config.json",
@@ -56,7 +58,13 @@ def download_huggingface_model(
 		"special_tokens_map.json",
 		"preprocessor_config.json",
 	]
-	
+
+	if isinstance(model_config.get("onnx_extra_files"), list):
+		for f in model_config.get("onnx_extra_files"):
+			allow_patterns.append(f)
+	elif isinstance(model_config.get("onnx_extra_files"), str):
+		allow_patterns.append(model_config.get("onnx_extra_files"))
+
 	pooling_config_path = model_config.get("pooling_config_path")
 	if pooling_config_path is not None:
 		allow_patterns.append(f"{pooling_config_path}/*")
