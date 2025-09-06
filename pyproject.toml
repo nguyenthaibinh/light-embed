@@ -9,7 +9,7 @@ include = ["light_embed*"] # <-- this changed
 
 [project]
 name = "light-embed"
-version = "1.0.7"
+version = "1.0.8"
 description = "Fast and Lightweight Text Embedding"
 readme = "README.md"
 authors = [{ name = "Binh Nguyen", email = "binhcode25@gmail.com" }]
@@ -17,10 +17,10 @@ maintainers = [{name = "Binh Nguyen", email = "binhcode25@gmail.com"}]
 requires-python = ">=3.11"
 license = { text = "MIT" }
 dependencies = [
-    "numpy>=2",
-    "huggingface_hub>=0.25.2",
-    "onnxruntime==1.22.0",
-    "tokenizers==0.21.1"
+    "numpy~=2.3.2",
+    "huggingface_hub~=0.34.4",
+    "onnxruntime~=1.22.1",
+    "tokenizers~=0.22.0"
 ]
 
 [project.urls]
